@@ -7,17 +7,14 @@ TICKS_PER_SEC = 240
 ''' Joint constants '''
 MAX_JOINT_FORCE = 50
 
+AMPLITUDE = np.pi / 6
+FREQUENCY = 11
+PHASE_OFFSET = 0
 # Front joint angles
-amplitude = np.pi / 6
-frequency = 11
-phase_offset = 0
-TARGET_ANGLES_FRONT = amplitude * np.sin(frequency
+TARGET_ANGLES_FRONT = AMPLITUDE * np.sin(FREQUENCY
                                          * np.linspace(0, 2*np.pi, TIME_STEPS)
-                                         + phase_offset)
+                                         + PHASE_OFFSET)
 # Back joint angles
-amplitude = np.pi / 6
-frequency = 11
-phase_offset = 0
-TARGET_ANGLES_BACK = amplitude * np.sin(frequency
+TARGET_ANGLES_BACK = AMPLITUDE * np.sin(FREQUENCY
                                         * np.linspace(0, 2*np.pi, TIME_STEPS)
-                                        + phase_offset)
+                                        + PHASE_OFFSET)
