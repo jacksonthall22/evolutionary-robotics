@@ -22,10 +22,11 @@ class Simulation:
 
     def run(self):
         for t in range(c.TIME_STEPS):
-            print(t)
+            # print(t)
             pb.stepSimulation()
 
             self.robot.sense(t)
+            self.robot.think(t)
             self.robot.act(t)
 
             time.sleep(1/c.TICKS_PER_SEC)
