@@ -19,9 +19,9 @@ class Motor:
                                         * np.linspace(0, 2*np.pi, c.TIME_STEPS)
                                         + phase_offset)
 
-    def set_value(self, robot_id, t):
+    def set_value(self, robot_id, desired_angle):
         ps.Set_Motor_For_Joint(bodyIndex=robot_id,
                                jointName=self.joint_name,
                                controlMode=pb.POSITION_CONTROL,
-                               targetPosition=self.motor_values[t],
+                               targetPosition=desired_angle,
                                maxForce=c.MAX_JOINT_FORCE)

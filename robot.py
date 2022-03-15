@@ -27,8 +27,8 @@ class Robot:
             sensor.get_value(t)
 
     def think(self, t):
-        pass
-        # self.nn.Update()
+        # pass
+        self.nn.Update()
 
     def prepare_to_act(self):
         self.motors = {}
@@ -43,5 +43,11 @@ class Robot:
                                             phase_offset=c.PHASE_OFFSET)
 
     def act(self, t):
-        for motor in self.motors.values():
-            motor.set_value(self.robot_id, t)
+        for neuron_name in self.nn.Get_Neuron_Names():
+            if self.nn.Is_Motor_Neuron(neuron_name):
+                joint_name = self.nn.Get_Motor_Neurons_Joint(neuron_name)
+                desired_angle = self.nn.Get_Value_Of(neuron_name)
+                self.motors[joint_name].set_value(self.robot_id, desired_angle)
+                print('test:', neuron_name, joint_name, desired_angle)
+
+        # for motor in self.motors.values():
