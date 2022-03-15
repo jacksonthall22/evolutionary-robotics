@@ -48,6 +48,4 @@ class Robot:
                 joint_name = self.nn.Get_Motor_Neurons_Joint(neuron_name)
                 desired_angle = self.nn.Get_Value_Of(neuron_name)
                 self.motors[joint_name].set_value(self.robot_id, desired_angle)
-                print('test:', neuron_name, joint_name, desired_angle)
-
-        # for motor in self.motors.values():
+                # print('test:', neuron_name, joint_name, desired_angle)
