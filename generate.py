@@ -1,4 +1,5 @@
 import pyrosim.pyrosim as pyrosim
+import random
 
 
 def create_world():
@@ -23,11 +24,11 @@ def generate_brain():
     pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
     pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
 
-    for source in range(5):
-        for target in range(5):
+    for source in (0, 1, 2):
+        for target in (3, 4):
             pyrosim.Send_Synapse(sourceNeuronName=source,
                                  targetNeuronName=target,
-                                 weight=1.0)
+                                 weight=random.uniform(-1, 1))
     pyrosim.End()
 
 def main():
