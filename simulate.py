@@ -1,8 +1,10 @@
 from simulation import Simulation
+import sys
 
-
-simulation = Simulation()
+direct_or_gui = sys.argv[1]
+simulation = Simulation(direct_or_gui)
 simulation.run()
+simulation.get_fitness()
 
 
 # import pybullet as p

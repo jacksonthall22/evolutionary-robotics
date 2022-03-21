@@ -34,8 +34,6 @@ class Robot:
         self.motors = {}
         for joint_name in ps.jointNamesToIndices:
             f = c.FREQUENCY
-            if joint_name == 'Torso_FrontLeg':
-                f *= 2
 
             self.motors[joint_name] = Motor(joint_name,
                                             amplitude=c.AMPLITUDE,
@@ -49,3 +47,9 @@ class Robot:
                 desired_angle = self.nn.Get_Value_Of(neuron_name)
                 self.motors[joint_name].set_value(self.robot_id, desired_angle)
                 # print('test:', neuron_name, joint_name, desired_angle)
+
+    def get_fitness(self):
+        x_coord_of_link_0 = pyb.getLinkState(self.robot_id, 0)[0][0]
+
+        with open('fitness.txt', 'w') as f:
+            f.write(str(x_coord_of_link_0))
