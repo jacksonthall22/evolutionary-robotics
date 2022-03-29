@@ -10,7 +10,7 @@ class JOINT:
         self.position = position
         self.depth = 1
 
-    def Save(self, f):
+    def Save(self, f, joint_axis):
         Save_Whitespace(self.depth, f)
         f.write(f'<joint name="{self.name}" type="{self.type}">\n')
         Save_Whitespace(self.depth, f)
@@ -24,7 +24,7 @@ class JOINT:
         f.write(f'   <origin rpy="0 0 0" xyz="{p[0]} {p[1]} {p[2]}" />\n')
 
         Save_Whitespace(self.depth, f)
-        f.write('   <axis xyz="0 1 0"/>\n')
+        f.write(f'   <axis xyz="{joint_axis}"/>\n')
 
         Save_Whitespace(self.depth, f)
         f.write('   <limit effort="0.0" lower="-3.14159" upper="3.14159" velocity="0.0"/>\n')

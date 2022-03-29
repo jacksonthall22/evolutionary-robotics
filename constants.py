@@ -21,5 +21,5 @@ TARGET_ANGLES_BACK = AMPLITUDE * np.sin(FREQUENCY
                                         * np.linspace(0, 2*np.pi, TIME_STEPS)
                                         + PHASE_OFFSET)
 
-NUM_SENSOR_NEURONS = 3
-NUM_MOTOR_NEURONS = 2
+NUM_SENSOR_NEURONS = 5
+NUM_MOTOR_NEURONS = 4
