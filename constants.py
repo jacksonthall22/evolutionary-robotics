@@ -1,9 +1,10 @@
 import numpy as np
 
 ''' Simulation constants '''
-TIME_STEPS = 500
+TIME_STEPS = 1000
 TICKS_PER_SEC = 100
-NUM_GENERATIONS = 10
+NUM_GENERATIONS = 30
+POPULATION_SIZE = 15
 
 ''' Joint constants '''
 MAX_JOINT_FORCE = 50

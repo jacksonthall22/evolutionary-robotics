@@ -1,9 +1,12 @@
 from hillclimber import HillClimber
+from parallelhillclimber import ParallelHillClimber
 
-hc = HillClimber()
-hc.evolve()
-hc.show_best()
+phc = ParallelHillClimber()
+phc.evolve()
+input('Press enter to show the best solution!\n>>> ')
+phc.show_best()
 
+print('done!')
 # 1/0
 
 # for _ in range(1):
