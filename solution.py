@@ -51,9 +51,6 @@ class Solution:
         def add_tup(t1: tuple, t2: tuple) -> tuple:
             return tuple(map(op.add, t1, t2))
 
-        def sub_tup(t1: tuple, t2: tuple) -> tuple:
-            return tuple(map(op.sub, t1, t2))
-
         # Torso
         TORSO_SIZE = (1.5, 0.5, 0.2)
         TORSO_SIZE_X, TORSO_SIZE_Y, TORSO_SIZE_Z = TORSO_SIZE
@@ -87,41 +84,32 @@ class Solution:
                            position=LEG_JOINT_FL, joint_axis=(0, 1, 0), initial_angle=LEG_INITIAL_ANGLE)
 
         # Leg Links
-        LEG_POS_BR = (0, 0, -LEG_SIZE_Z/2 + TORSO_SIZE_Z/2)
-        LEG_POS_BL = (0, 0, -LEG_SIZE_Z/2 + TORSO_SIZE_Z/2)
-        LEG_POS_FR = (0, 0, -LEG_SIZE_Z/2 + TORSO_SIZE_Z/2)
-        LEG_POS_FL = (0, 0, -LEG_SIZE_Z/2 + TORSO_SIZE_Z/2)
-        pyrosim.Send_Cube(name='BackRightLeg', pos=LEG_POS_BR, size=LEG_SIZE)
-        pyrosim.Send_Cube(name='BackLeftLeg', pos=LEG_POS_BL, size=LEG_SIZE)
-        pyrosim.Send_Cube(name='FrontRightLeg', pos=LEG_POS_FR, size=LEG_SIZE)
-        pyrosim.Send_Cube(name='FrontLeftLeg', pos=LEG_POS_FL, size=LEG_SIZE)
+        LEG_POS = (0, 0, -LEG_SIZE_Z/2 + TORSO_SIZE_Z/2)
+        pyrosim.Send_Cube(name='BackRightLeg', pos=LEG_POS, size=LEG_SIZE)
+        pyrosim.Send_Cube(name='BackLeftLeg', pos=LEG_POS, size=LEG_SIZE)
+        pyrosim.Send_Cube(name='FrontRightLeg', pos=LEG_POS, size=LEG_SIZE)
+        pyrosim.Send_Cube(name='FrontLeftLeg', pos=LEG_POS, size=LEG_SIZE)
 
         # Lower Leg Joints
         LOWER_LEG_SIZE = (0.1, 0.1, 0.75)
         LOWER_LEG_SIZE_X, LOWER_LEG_SIZE_Y, LOWER_LEG_SIZE_Z = LOWER_LEG_SIZE
         LOWER_LEG_INITIAL_ANGLE = tuple(np.multiply(LEG_INITIAL_ANGLE, -2))
-        LOWER_LEG_JOINT_BR = (0, 0, -LEG_SIZE_Z + TORSO_SIZE_Z/2)
-        LOWER_LEG_JOINT_BL = (0, 0, -LEG_SIZE_Z + TORSO_SIZE_Z/2)
-        LOWER_LEG_JOINT_FR = (0, 0, -LEG_SIZE_Z + TORSO_SIZE_Z/2)
-        LOWER_LEG_JOINT_FL = (0, 0, -LEG_SIZE_Z + TORSO_SIZE_Z/2)
+        LOWER_LEG_JOINT = (0, 0, -LEG_SIZE_Z + TORSO_SIZE_Z/2)
         pyrosim.Send_Joint(name='BackRightLeg_LowerBackRightLeg', parent='BackRightLeg', child='LowerBackRightLeg', type='revolute',
-                           position=LOWER_LEG_JOINT_BR, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
+                           position=LOWER_LEG_JOINT, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
         pyrosim.Send_Joint(name='BackLeftLeg_LowerBackLeftLeg', parent='BackLeftLeg', child='LowerBackLeftLeg', type='revolute',
-                           position=LOWER_LEG_JOINT_BL, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
+                           position=LOWER_LEG_JOINT, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
         pyrosim.Send_Joint(name='FrontRightLeg_LowerFrontRightLeg', parent='FrontRightLeg', child='LowerFrontRightLeg', type='revolute',
-                           position=LOWER_LEG_JOINT_FR, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
+                           position=LOWER_LEG_JOINT, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
         pyrosim.Send_Joint(name='FrontLeftLeg_LowerFrontLeftLeg', parent='FrontLeftLeg', child='LowerFrontLeftLeg', type='revolute',
-                           position=LOWER_LEG_JOINT_FL, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
+                           position=LOWER_LEG_JOINT, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
 
         # Lower Leg Links
-        LOWER_LEG_POS_BR = (0, 0, -LOWER_LEG_SIZE_Z/2)
-        LOWER_LEG_POS_BL = (0, 0, -LOWER_LEG_SIZE_Z/2)
-        LOWER_LEG_POS_FR = (0, 0, -LOWER_LEG_SIZE_Z/2)
-        LOWER_LEG_POS_FL = (0, 0, -LOWER_LEG_SIZE_Z/2)
-        pyrosim.Send_Cube(name='LowerBackRightLeg', pos=LOWER_LEG_POS_BR, size=LOWER_LEG_SIZE)
-        pyrosim.Send_Cube(name='LowerBackLeftLeg', pos=LOWER_LEG_POS_BL, size=LOWER_LEG_SIZE)
-        pyrosim.Send_Cube(name='LowerFrontRightLeg', pos=LOWER_LEG_POS_FR, size=LOWER_LEG_SIZE)
-        pyrosim.Send_Cube(name='LowerFrontLeftLeg', pos=LOWER_LEG_POS_FL, size=LOWER_LEG_SIZE)
+        LOWER_LEG_POS = (0, 0, -LOWER_LEG_SIZE_Z/2)
+        pyrosim.Send_Cube(name='LowerBackRightLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
+        pyrosim.Send_Cube(name='LowerBackLeftLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
+        pyrosim.Send_Cube(name='LowerFrontRightLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
+        pyrosim.Send_Cube(name='LowerFrontLeftLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
 
         pyrosim.End()
 
