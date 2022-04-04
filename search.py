@@ -3,7 +3,7 @@ from parallelhillclimber import ParallelHillClimber
 
 phc = ParallelHillClimber()
 phc.evolve()
-input('Press enter to show the best solution!\n>>> ')
+# input('Press enter to show the best solution!\n>>> ')
 phc.show_best()
 
 print('done!')

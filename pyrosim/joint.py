@@ -10,7 +10,15 @@ class JOINT:
         self.position = position
         self.depth = 1
 
-    def Save(self, f, joint_axis):
+    def Save(self, f, joint_axis, initial_angle=None):
+        if initial_angle is None:
+            initial_angle = (0, 0, 0)
+
+        assert isinstance(joint_axis, (tuple, list)) \
+               and len(joint_axis) == 3
+        assert isinstance(initial_angle, (tuple, list)) \
+               and len(initial_angle) == 3
+
         Save_Whitespace(self.depth, f)
         f.write(f'<joint name="{self.name}" type="{self.type}">\n')
         Save_Whitespace(self.depth, f)
@@ -20,11 +28,13 @@ class JOINT:
         f.write(f'   <child  link="{self.child}"/>\n')
 
         Save_Whitespace(self.depth, f)
-        p = self.position
-        f.write(f'   <origin rpy="0 0 0" xyz="{p[0]} {p[1]} {p[2]}" />\n')
+        initial_angle_str = ' '.join(map(str, initial_angle))
+        position_str = ' '.join(map(str, self.position))
+        f.write(f'   <origin rpy="{initial_angle_str}" xyz="{position_str}" />\n')
 
         Save_Whitespace(self.depth, f)
-        f.write(f'   <axis xyz="{joint_axis}"/>\n')
+        joint_axis_str = ' '.join(map(str, joint_axis))
+        f.write(f'   <axis xyz="{joint_axis_str}"/>\n')
 
         Save_Whitespace(self.depth, f)
         f.write('   <limit effort="0.0" lower="-3.14159" upper="3.14159" velocity="0.0"/>\n')

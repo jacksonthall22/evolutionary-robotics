@@ -3,8 +3,8 @@ import numpy as np
 ''' Simulation constants '''
 TIME_STEPS = 2000
 TICKS_PER_SEC = 1000
-NUM_GENERATIONS = 5
-POPULATION_SIZE = 15
+NUM_GENERATIONS = 1
+POPULATION_SIZE = 1
 
 ''' Robot constants '''
 MAX_JOINT_FORCE = 50

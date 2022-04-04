@@ -67,7 +67,12 @@ def Prepare_To_Simulate(bodyID):
     Prepare_Link_Dictionary(bodyID)
     Prepare_Joint_Dictionary(bodyID)
 
-def Send_Cube(name="default", pos=[0, 0, 0], size=[1, 1, 1]):
+def Send_Cube(name="default", pos=None, size=None):
+    if pos is None:
+        pos = [0, 0, 0]
+    if size is None:
+        size = [1, 1, 1]
+
     global availableLinkIndex
     global links
     if filetype == SDF_FILETYPE:
@@ -85,9 +90,9 @@ def Send_Cube(name="default", pos=[0, 0, 0], size=[1, 1, 1]):
     linkNamesToIndices[name] = availableLinkIndex
     availableLinkIndex = availableLinkIndex + 1
 
-def Send_Joint(name, parent, child, type, position, joint_angle):
+def Send_Joint(name, parent, child, type, position, joint_axis, initial_angle=None):
     joint = JOINT(name, parent, child, type, position)
-    joint.Save(f, joint_angle)
+    joint.Save(f, joint_axis, initial_angle)
 
 def Send_Motor_Neuron(name, jointName):
     f.write('    <neuron name = "' + str(name) + '" type = "motor"  jointName = "' + jointName + '" />\n')
