@@ -90,8 +90,8 @@ def Send_Cube(name="default", pos=None, size=None):
     linkNamesToIndices[name] = availableLinkIndex
     availableLinkIndex = availableLinkIndex + 1
 
-def Send_Joint(name, parent, child, type, position, joint_axis, initial_angle=None):
-    joint = JOINT(name, parent, child, type, position)
+def Send_Joint(parent, child, type, position, joint_axis, initial_angle=None):
+    joint = JOINT('_'.join((parent, child)), parent, child, type, position)
     joint.Save(f, joint_axis, initial_angle)
 
 def Send_Motor_Neuron(name, jointName):
