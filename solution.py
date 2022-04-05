@@ -42,7 +42,7 @@ class Solution:
 
     def create_world(self):
         pyrosim.Start_SDF('world.sdf')
-        pyrosim.Send_Cube(name='Box', pos=(0, 2, 0.5), size=(1, 1, 1))
+        pyrosim.Send_Cube(name='Box', pos=(2, 2, 0.5), size=(1, 1, 1.5))
         pyrosim.End()
 
     def create_body(self):
@@ -109,6 +109,19 @@ class Solution:
         pyrosim.Send_Cube(name='LowerBackLeftLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
         pyrosim.Send_Cube(name='LowerFrontRightLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
         pyrosim.Send_Cube(name='LowerFrontLeftLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
+
+        # Arm Base Joint
+        ARM_BASE_SIZE = (0.2, 0.2, 0.2)
+        ARM_BASE_SIZE_X, ARM_BASE_SIZE_Y, ARM_BASE_SIZE_Z = ARM_BASE_SIZE
+        ARM_BASE_JOINT = add_tup(TORSO_POS, (-TORSO_SIZE_X/2 + ARM_BASE_SIZE_X/2,
+                                             0,
+                                             TORSO_SIZE_Z/2 + ARM_BASE_SIZE_Z/2))
+        pyrosim.Send_Joint(name='Torso_ArmBase', parent='Torso', child='ArmBase', type='revolute',
+                           position=ARM_BASE_JOINT, joint_axis=(0, 0, 1), initial_angle=None)
+
+        # Arm Base Link
+        ARM_BASE_POS = (0, 0, 0)
+        pyrosim.Send_Cube(name='ArmBase', pos=ARM_BASE_POS, size=ARM_BASE_SIZE)
 
         pyrosim.End()
 
