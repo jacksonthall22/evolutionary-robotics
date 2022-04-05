@@ -1,4 +1,5 @@
 import pyrosim.pyrosim as pyrosim
+import math
 import random
 import numpy as np
 import os
@@ -113,17 +114,109 @@ class Solution:
         pyrosim.Send_Cube(name='LowerFrontLeftLeg', pos=LOWER_LEG_POS, size=LOWER_LEG_SIZE)
 
         # Arm Base Joint
-        ARM_BASE_SIZE = (0.2, 0.2, 0.2)
+        ARM_BASE_SIZE = (0.2, 0.2, 0.1)
         ARM_BASE_SIZE_X, ARM_BASE_SIZE_Y, ARM_BASE_SIZE_Z = ARM_BASE_SIZE
         ARM_BASE_JOINT = add_tup(TORSO_POS, (-TORSO_SIZE_X/2 + ARM_BASE_SIZE_X/2,
                                              0,
-                                             TORSO_SIZE_Z/2 + ARM_BASE_SIZE_Z/2))
-        pyrosim.Send_Joint(name='Torso_ArmBase', parent='Torso', child='ArmBase', type='revolute',
+                                             TORSO_SIZE_Z/2))
+        pyrosim.Send_Joint(parent='Torso', child='ArmBase', type='revolute',
                            position=ARM_BASE_JOINT, joint_axis=(0, 0, 1), initial_angle=None)
 
         # Arm Base Link
-        ARM_BASE_POS = (0, 0, 0)
+        ARM_BASE_POS = (0, 0, ARM_BASE_SIZE_Z/2)
         pyrosim.Send_Cube(name='ArmBase', pos=ARM_BASE_POS, size=ARM_BASE_SIZE)
+
+        # Arm 1 Joint (segment farthest from hand)
+        ARM_1_SIZE = (0.1, 0.1, 0.65)
+        ARM_1_SIZE_X, ARM_1_SIZE_Y, ARM_1_SIZE_Z = ARM_1_SIZE
+        ARM_1_JOINT = (0,
+                       0,
+                       ARM_BASE_SIZE_Z)
+        ARM_1_INITIAL_ANGLE = (0, math.pi/3, 0)
+        pyrosim.Send_Joint(parent='ArmBase', child='Arm1', type='revolute',
+                           position=ARM_1_JOINT, joint_axis=(0, 1, 0), initial_angle=ARM_1_INITIAL_ANGLE)
+
+        # Arm 1 Link
+        ARM_1_POS = (0,
+                     0,
+                     ARM_1_SIZE_Z/2)
+        pyrosim.Send_Cube(name='Arm1', pos=ARM_1_POS, size=ARM_1_SIZE)
+
+        # Arm 2 Joint (segment closest to hand)
+        ARM_2_SIZE = (0.1, 0.1, 0.65)
+        ARM_2_SIZE_X, ARM_2_SIZE_Y, ARM_2_SIZE_Z = ARM_2_SIZE
+        ARM_2_JOINT = (0,
+                       0,
+                       ARM_1_SIZE_Z)
+        ARM_2_INITIAL_ANGLE = tuple(np.multiply(ARM_1_INITIAL_ANGLE, -2))
+        pyrosim.Send_Joint(parent='Arm1', child='Arm2', type='revolute',
+                           position=ARM_2_JOINT, joint_axis=(0, 1, 0), initial_angle=ARM_2_INITIAL_ANGLE)
+
+        # Arm 2 Link
+        ARM_2_POS = (0,
+                     0,
+                     ARM_2_SIZE_Z/2)
+        pyrosim.Send_Cube(name='Arm2', pos=ARM_2_POS, size=ARM_2_SIZE)
+
+        # Arm 3 Joint
+        ARM_3_SIZE = (0.1, 0.1, 0.2)
+        ARM_3_SIZE_X, ARM_3_SIZE_Y, ARM_3_SIZE_Z = ARM_3_SIZE
+        ARM_3_JOINT = (0,
+                       0,
+                       ARM_2_SIZE_Z)
+        ARM_3_INITIAL_ANGLE = (0, -0.5, 0)
+        pyrosim.Send_Joint(parent='Arm2', child='Arm3', type='revolute',
+                           position=ARM_3_JOINT, joint_axis=(0, 1, 0), initial_angle=ARM_3_INITIAL_ANGLE)
+
+        # Arm 3 Joint
+        ARM_3_POS = (0, 0, ARM_3_SIZE_Z/2)
+        pyrosim.Send_Cube(name='Arm3', pos=ARM_3_POS, size=ARM_3_SIZE)
+
+        # Wrist Joint
+        WRIST_SIZE = (0.1, 0.1, 0.05)
+        WRIST_SIZE_X, WRIST_SIZE_Y, WRIST_SIZE_Z = WRIST_SIZE
+        WRIST_JOINT = (0,
+                       0,
+                       ARM_3_SIZE_Z)
+        WRIST_INITIAL_ANGLE = (0, 0, math.pi/4)
+        pyrosim.Send_Joint(parent='Arm3', child='Wrist', type='revolute',
+                           position=WRIST_JOINT, joint_axis=(0, 0, 1), initial_angle=WRIST_INITIAL_ANGLE)
+
+        # Wrist Link
+        WRIST_POS = (0, 0, WRIST_SIZE_Z/2)
+        pyrosim.Send_Cube(name='Wrist', pos=WRIST_POS, size=WRIST_SIZE)
+
+        # Grabber 1 Joint
+        GRABBER_1_SIZE = (0.05, 0.05, 0.2)
+        GRABBER_1_SIZE_X, GRABBER_1_SIZE_Y, GRABBER_1_SIZE_Z = GRABBER_1_SIZE
+        GRABBER_1_JOINT = (WRIST_SIZE_X/2,
+                           0,
+                           WRIST_SIZE_Z)
+        GRABBER_1_INITIAL_ANGLE = (0, 0, 0)
+        pyrosim.Send_Joint(parent='Wrist', child='Grabber1', type='revolute',
+                           position=GRABBER_1_JOINT, joint_axis=(0, 1, 0), initial_angle=GRABBER_1_INITIAL_ANGLE)
+
+        # Grabber 1 Link
+        GRABBER_1_POS = (GRABBER_1_SIZE_X/2,
+                         0,
+                         GRABBER_1_SIZE_Z/2)
+        pyrosim.Send_Cube(name='Grabber1', pos=GRABBER_1_POS, size=GRABBER_1_SIZE)
+
+        # Grabber 2 Joint
+        GRABBER_2_SIZE = (0.05, 0.05, 0.2)
+        GRABBER_2_SIZE_X, GRABBER_2_SIZE_Y, GRABBER_2_SIZE_Z = GRABBER_2_SIZE
+        GRABBER_2_JOINT = (-WRIST_SIZE_X / 2,
+                           0,
+                           WRIST_SIZE_Z)
+        GRABBER_2_INITIAL_ANGLE = tuple(np.multiply(GRABBER_1_INITIAL_ANGLE, -1))
+        pyrosim.Send_Joint(parent='Wrist', child='Grabber2', type='revolute',
+                           position=GRABBER_2_JOINT, joint_axis=(0, 1, 0), initial_angle=GRABBER_2_INITIAL_ANGLE)
+
+        # Grabber 2 Link
+        GRABBER_2_POS = (-GRABBER_2_SIZE_X / 2,
+                         0,
+                         GRABBER_2_SIZE_Z / 2)
+        pyrosim.Send_Cube(name='Grabber2', pos=GRABBER_2_POS, size=GRABBER_2_SIZE)
 
         pyrosim.End()
 
