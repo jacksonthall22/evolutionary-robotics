@@ -43,9 +43,17 @@ class Solution:
 
     def create_world(self):
         pyrosim.Start_SDF('world.sdf')
-        BOX_SIZE = (1, 1, 1.5)
-        BOX_SIZE_X, BOX_SIZE_Y, BOX_SIZE_Z = BOX_SIZE
-        pyrosim.Send_Cube(name='Box', pos=(3, 3, BOX_SIZE_Z/2), size=BOX_SIZE)
+
+        X_DISTANCE = 5
+
+        BOX_1_SIZE = (1, 1, 1.25)
+        BOX_1_SIZE_X, BOX_1_SIZE_Y, BOX_1_SIZE_Z = BOX_1_SIZE
+        pyrosim.Send_Cube(name='Box1', pos=(-X_DISTANCE, 0, BOX_1_SIZE_Z/2), size=BOX_1_SIZE)
+
+        BOX_2_SIZE = (0.1, 0.1, 0.1)
+        BOX_2_SIZE_X, BOX_2_SIZE_Y, BOX_2_SIZE_Z = BOX_2_SIZE
+        pyrosim.Send_Cube(name='Box2', pos=(-X_DISTANCE, 0, BOX_1_SIZE_Z+BOX_2_SIZE_Z/2 + 0.25), size=BOX_2_SIZE)
+
         pyrosim.End()
 
     def create_body(self):
