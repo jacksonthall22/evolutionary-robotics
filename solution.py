@@ -42,7 +42,9 @@ class Solution:
 
     def create_world(self):
         pyrosim.Start_SDF('world.sdf')
-        pyrosim.Send_Cube(name='Box', pos=(2, 2, 0.5), size=(1, 1, 1.5))
+        BOX_SIZE = (1, 1, 1.5)
+        BOX_SIZE_X, BOX_SIZE_Y, BOX_SIZE_Z = BOX_SIZE
+        pyrosim.Send_Cube(name='Box', pos=(3, 3, BOX_SIZE_Z/2), size=BOX_SIZE)
         pyrosim.End()
 
     def create_body(self):
@@ -54,7 +56,7 @@ class Solution:
         # Torso
         TORSO_SIZE = (1.5, 0.5, 0.2)
         TORSO_SIZE_X, TORSO_SIZE_Y, TORSO_SIZE_Z = TORSO_SIZE
-        TORSO_POS = (1, 1, 1.5 - TORSO_SIZE_Z/2)
+        TORSO_POS = (1, 1, 1.5)
         pyrosim.Send_Cube(name='Torso', pos=TORSO_POS, size=TORSO_SIZE)
 
         # Leg Joints
