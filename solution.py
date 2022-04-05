@@ -54,25 +54,24 @@ class Solution:
         # Torso
         TORSO_SIZE = (1.5, 0.5, 0.2)
         TORSO_SIZE_X, TORSO_SIZE_Y, TORSO_SIZE_Z = TORSO_SIZE
-        TORSO_POS = (0, 0, 2)
-        TORSO_POS_X, TORSO_POS_Y, TORSO_POS_Z = TORSO_POS
+        TORSO_POS = (1, 1, 1.5 - TORSO_SIZE_Z/2)
         pyrosim.Send_Cube(name='Torso', pos=TORSO_POS, size=TORSO_SIZE)
 
         # Leg Joints
         LEG_SIZE = (0.15, 0.1, 0.75)
         LEG_SIZE_X, LEG_SIZE_Y, LEG_SIZE_Z = LEG_SIZE
         LEG_INITIAL_ANGLE = (0, -0.75, 0)
-        LEG_JOINT_BR = add_tup(TORSO_POS, (-TORSO_POS_X + TORSO_SIZE_X/2 - LEG_SIZE_X/2,
-                                           -TORSO_POS_Y + TORSO_SIZE_Y/2 + LEG_SIZE_Y/2,
+        LEG_JOINT_BR = add_tup(TORSO_POS, (+TORSO_SIZE_X/2 - LEG_SIZE_X/2,
+                                           +TORSO_SIZE_Y/2 + LEG_SIZE_Y/2,
                                            0))
-        LEG_JOINT_BL = add_tup(TORSO_POS, (-TORSO_POS_X + TORSO_SIZE_X/2 - LEG_SIZE_X/2,
-                                           +TORSO_POS_Y - TORSO_SIZE_Y/2 - LEG_SIZE_Y/2,
+        LEG_JOINT_BL = add_tup(TORSO_POS, (+TORSO_SIZE_X/2 - LEG_SIZE_X/2,
+                                           -TORSO_SIZE_Y/2 - LEG_SIZE_Y/2,
                                            0))
-        LEG_JOINT_FR = add_tup(TORSO_POS, (+TORSO_POS_X - TORSO_SIZE_X/2 + LEG_SIZE_X/2,
-                                           -TORSO_POS_Y + TORSO_SIZE_Y/2 + LEG_SIZE_Y/2,
+        LEG_JOINT_FR = add_tup(TORSO_POS, (-TORSO_SIZE_X/2 + LEG_SIZE_X/2,
+                                           +TORSO_SIZE_Y/2 + LEG_SIZE_Y/2,
                                            0))
-        LEG_JOINT_FL = add_tup(TORSO_POS, (+TORSO_POS_X - TORSO_SIZE_X/2 + LEG_SIZE_X/2,
-                                           +TORSO_POS_Y - TORSO_SIZE_Y/2 - LEG_SIZE_Y/2,
+        LEG_JOINT_FL = add_tup(TORSO_POS, (-TORSO_SIZE_X/2 + LEG_SIZE_X/2,
+                                           -TORSO_SIZE_Y/2 - LEG_SIZE_Y/2,
                                            0))
         pyrosim.Send_Joint(name='Torso_BackRightLeg', parent='Torso', child='BackRightLeg', type='revolute',
                            position=LEG_JOINT_BR, joint_axis=(0, 1, 0), initial_angle=LEG_INITIAL_ANGLE)
