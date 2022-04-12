@@ -7,6 +7,9 @@ NUM_GENERATIONS = 1
 POPULATION_SIZE = 1
 
 ''' Robot constants '''
+NUM_SENSOR_NEURONS = 9
+NUM_MOTOR_NEURONS = 8
+
 MAX_JOINT_FORCE = 50
 
 JOINT_MOTOR_RANGE = 0.2
@@ -23,5 +26,3 @@ TARGET_ANGLES_BACK = AMPLITUDE * np.sin(FREQUENCY
                                         * np.linspace(0, 2*np.pi, TIME_STEPS)
                                         + PHASE_OFFSET)
 
-NUM_SENSOR_NEURONS = 9
-NUM_MOTOR_NEURONS = 8
