@@ -36,11 +36,9 @@ class Robot:
     def prepare_to_act(self):
         self.motors = {}
         for joint_name in ps.jointNamesToIndices:
-            f = c.FREQUENCY
-
             self.motors[joint_name] = Motor(joint_name,
                                             amplitude=c.AMPLITUDE,
-                                            frequency=f,
+                                            frequency=c.FREQUENCY,
                                             phase_offset=c.PHASE_OFFSET)
 
     def act(self, t):
