@@ -252,41 +252,40 @@ class Solution:
             num_motors[0] += 1
 
         sensor_names = [
-            # 'Torso',
+            'Torso',
 
-            # 'BackLeg',
-            # 'FrontLeg',
-            # 'LeftLeg',
-            # 'RightLeg',
+            'BackRightLeg',
+            'BackLeftLeg',
+            'FrontRightLeg',
+            'FrontLeftLeg',
 
-            'LowerBackLeg',
-            'LowerFrontLeg',
-            'LowerLeftLeg',
-            'LowerRightLeg',
+            'LowerBackRightLeg',
+            'LowerBackLeftLeg',
+            'LowerFrontRightLeg',
+            'LowerFrontLeftLeg',
         ]
-        # for sensor_name in sensor_names:
-        #     send_sensor(sensor_name)
+        for sensor_name in sensor_names:
+            send_sensor(sensor_name)
 
         motor_names = [
-            'Torso_BackLeg',
-            'Torso_FrontLeg',
-            'Torso_LeftLeg',
-            'Torso_RightLeg',
+            'Torso_BackRightLeg',
+            'Torso_BackLeftLeg',
+            'Torso_FrontRightLeg',
+            'Torso_FrontLeftLeg',
 
-            'BackLeg_LowerBackLeg',
-            'FrontLeg_LowerFrontLeg',
-            'LeftLeg_LowerLeftLeg',
-            'RightLeg_LowerRightLeg',
+            'BackRightLeg_LowerBackRightLeg',
+            'BackLeftLeg_LowerBackLeftLeg',
+            'FrontRightLeg_LowerFrontRightLeg',
+            'FrontLeftLeg_LowerFrontLeftLeg',
         ]
-        # for motor_name in motor_names:
-        #     send_motor(motor_name)
+        for motor_name in motor_names:
+            send_motor(motor_name)
 
-
-        # for row in range(num_sensors[0]):
-        #     for col in range(num_motors[0]):
-        #         pyrosim.Send_Synapse(sourceNeuronName=row,
-        #                              targetNeuronName=col+num_sensors[0],
-        #                              weight=self.weights[row][col])
+        for row in range(num_sensors[0]):
+            for col in range(num_motors[0]):
+                pyrosim.Send_Synapse(sourceNeuronName=row,
+                                     targetNeuronName=col+num_sensors[0],
+                                     weight=self.weights[row][col])
 
         pyrosim.End()
 
