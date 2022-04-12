@@ -94,8 +94,12 @@ class Solution:
                            position=LEG_JOINT_FL, joint_axis=(0, 1, 0), initial_angle=LEG_INITIAL_ANGLE)
 
         # Leg Links
-        LEG_POS_R = (0, LEG_SIZE_Y/2, -LEG_SIZE_Z/2 + LEG_SIZE_X/2)
-        LEG_POS_L = (0, -LEG_SIZE_Y/2, -LEG_SIZE_Z/2 + LEG_SIZE_X/2)
+        LEG_POS_R = (0,
+                     LEG_SIZE_Y/2,
+                     -LEG_SIZE_Z/2 + LEG_SIZE_X/2)
+        LEG_POS_L = (0,
+                     -LEG_SIZE_Y/2,
+                     -LEG_SIZE_Z/2 + LEG_SIZE_X/2)
         pyrosim.Send_Cube(name='BackRightLeg', pos=LEG_POS_R, size=LEG_SIZE)
         pyrosim.Send_Cube(name='BackLeftLeg', pos=LEG_POS_L, size=LEG_SIZE)
         pyrosim.Send_Cube(name='FrontRightLeg', pos=LEG_POS_R, size=LEG_SIZE)
@@ -105,8 +109,12 @@ class Solution:
         LOWER_LEG_SIZE = (0.1, 0.1, 0.75)
         LOWER_LEG_SIZE_X, LOWER_LEG_SIZE_Y, LOWER_LEG_SIZE_Z = LOWER_LEG_SIZE
         LOWER_LEG_INITIAL_ANGLE = tuple(np.multiply(LEG_INITIAL_ANGLE, -2))
-        LOWER_LEG_JOINT_R = (0, LEG_SIZE_Y/2, -LEG_SIZE_Z + TORSO_SIZE_Z/2)
-        LOWER_LEG_JOINT_L = (0, -LEG_SIZE_Y/2, -LEG_SIZE_Z + TORSO_SIZE_Z/2)
+        LOWER_LEG_JOINT_R = (0,
+                             LEG_SIZE_Y/2,
+                             -LEG_SIZE_Z + LEG_SIZE_X/2)
+        LOWER_LEG_JOINT_L = (0,
+                             -LEG_SIZE_Y/2,
+                             -LEG_SIZE_Z + LEG_SIZE_X/2)
         pyrosim.Send_Joint(parent='BackRightLeg', child='LowerBackRightLeg', type='revolute',
                            position=LOWER_LEG_JOINT_R, joint_axis=(0, 1, 0), initial_angle=LOWER_LEG_INITIAL_ANGLE)
         pyrosim.Send_Joint(parent='BackLeftLeg', child='LowerBackLeftLeg', type='revolute',

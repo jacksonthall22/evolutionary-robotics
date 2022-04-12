@@ -140,28 +140,28 @@
     <joint name="BackRightLeg_LowerBackRightLeg" type="revolute">
        <parent link="BackRightLeg"/>
        <child  link="LowerBackRightLeg"/>
-       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 0.05 -0.65" />
+       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 0.05 -0.675" />
        <axis xyz="0 1 0"/>
        <limit effort="0.0" lower="-3.14159" upper="3.14159" velocity="0.0"/>
     </joint>
     <joint name="BackLeftLeg_LowerBackLeftLeg" type="revolute">
        <parent link="BackLeftLeg"/>
        <child  link="LowerBackLeftLeg"/>
-       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 -0.05 -0.65" />
+       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 -0.05 -0.675" />
        <axis xyz="0 1 0"/>
        <limit effort="0.0" lower="-3.14159" upper="3.14159" velocity="0.0"/>
     </joint>
     <joint name="FrontRightLeg_LowerFrontRightLeg" type="revolute">
        <parent link="FrontRightLeg"/>
        <child  link="LowerFrontRightLeg"/>
-       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 0.05 -0.65" />
+       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 0.05 -0.675" />
        <axis xyz="0 1 0"/>
        <limit effort="0.0" lower="-3.14159" upper="3.14159" velocity="0.0"/>
     </joint>
     <joint name="FrontLeftLeg_LowerFrontLeftLeg" type="revolute">
        <parent link="FrontLeftLeg"/>
        <child  link="LowerFrontLeftLeg"/>
-       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 -0.05 -0.65" />
+       <origin rpy="-0.0 1.5707963267948966 -0.0" xyz="0 -0.05 -0.675" />
        <axis xyz="0 1 0"/>
        <limit effort="0.0" lower="-3.14159" upper="3.14159" velocity="0.0"/>
     </joint>
