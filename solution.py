@@ -290,6 +290,7 @@ class Solution:
         pyrosim.End()
 
     def mutate(self):
-        idx = random.randint(0, self.weights.size-1)
-        new_weight = random.uniform(-1, 1)
-        self.weights.ravel()[idx] = new_weight
+        for _ in range(c.NUM_MUTATIONS):
+            idx = random.randint(0, self.weights.size-1)
+            new_weight = random.uniform(-1, 1)
+            self.weights.ravel()[idx] = new_weight
