@@ -258,11 +258,11 @@ class Solution:
 
         sensor_names = [
             'Torso',
-
-            'BackRightLeg',
-            'BackLeftLeg',
-            'FrontRightLeg',
-            'FrontLeftLeg',
+            #
+            # 'BackRightLeg',
+            # 'BackLeftLeg',
+            # 'FrontRightLeg',
+            # 'FrontLeftLeg',
 
             'LowerBackRightLeg',
             'LowerBackLeftLeg',

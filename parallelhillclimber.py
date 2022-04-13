@@ -48,7 +48,7 @@ class ParallelHillClimber:
 
     def select(self):
         for i, (child, parent) in enumerate(zip(self.children.values(), self.parents.values())):
-            if child.fitness < parent.fitness:
+            if child.fitness > parent.fitness:
                 self.parents[i] = child
 
     def evaluate(self, solutions):
@@ -63,6 +63,6 @@ class ParallelHillClimber:
         return '\n' + '\n'.join((f'[{i}] {p.fitness:9.6f}' for i, p in self.parents.items())) + '\n'
 
     def show_best(self):
-        best_parent = max(self.parents.values(), key=lambda p: -p.fitness)
+        best_parent = max(self.parents.values(), key=lambda p: p.fitness)
         best_parent.start_simulation('GUI')
         best_parent.create_brain(filename='best_brain.nndf')
