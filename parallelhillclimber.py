@@ -65,3 +65,4 @@ class ParallelHillClimber:
     def show_best(self):
         best_parent = max(self.parents.values(), key=lambda p: -p.fitness)
         best_parent.start_simulation('GUI')
+        best_parent.create_brain(filename='best_brain.nndf')

@@ -8,11 +8,14 @@ import os
 
 
 class Robot:
-    def __init__(self, id):
+    def __init__(self, id, brain_filename=None):
+        if brain_filename is None:
+            brain_filename = f'brain{id}.nndf'
+
         self.id = id
         self.sensors = {}
         self.motors = {}
-        self.nn = NEURAL_NETWORK(f'brain{id}.nndf')
+        self.nn = NEURAL_NETWORK(brain_filename)
         os.system(f'del brain{id}.nndf')
 
         self.robot_id = pyb.loadURDF('body.urdf')

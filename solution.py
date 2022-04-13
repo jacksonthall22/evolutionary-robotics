@@ -238,8 +238,13 @@ class Solution:
 
         pyrosim.End()
 
-    def create_brain(self):
-        pyrosim.Start_NeuralNetwork(f'brain{self.id}.nndf')
+    def create_brain(self, filename=None):
+        if filename is None:
+            filename = f'brain{self.id}.nndf'
+        else:
+            assert filename.endswith('.nndf'), 'filename must be .nndf'
+
+        pyrosim.Start_NeuralNetwork(filename)
 
         num_sensors = [0]
         def send_sensor(link_name):
