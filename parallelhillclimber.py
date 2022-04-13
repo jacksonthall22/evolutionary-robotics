@@ -25,11 +25,11 @@ class ParallelHillClimber:
             s = f'\nGENERATION {gen + 1}/{NUM_GENERATIONS}'
             print(s)
             print('=' * len(s.strip()))
-            self.evolve_for_one_generation()
+            self.evolve_for_one_generation(gen)
 
-    def evolve_for_one_generation(self):
+    def evolve_for_one_generation(self, gen):
         self.spawn()
-        self.mutate()
+        self.mutate(gen)
         self.evaluate(self.children)
         print(self)
         self.select()
@@ -42,9 +42,9 @@ class ParallelHillClimber:
             self.children[i].set_id(self.nextAvailableID)
             self.nextAvailableID += 1
 
-    def mutate(self):
+    def mutate(self, gen):
         for i, child in self.children.items():
-            child.mutate()
+            child.mutate(gen)
 
     def select(self):
         for i, (child, parent) in enumerate(zip(self.children.values(), self.parents.values())):

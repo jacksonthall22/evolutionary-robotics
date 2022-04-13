@@ -294,8 +294,10 @@ class Solution:
 
         pyrosim.End()
 
-    def mutate(self):
-        for _ in range(c.NUM_MUTATIONS):
+    def mutate(self, gen):
+        num_mutations = max(1, c.START_NUM_MUTATIONS - math.floor(gen / c.NUM_GENERATIONS))
+
+        for _ in range(num_mutations):
             idx = random.randint(0, self.weights.size-1)
             new_weight = random.uniform(-1, 1)
             self.weights.ravel()[idx] = new_weight
