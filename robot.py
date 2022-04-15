@@ -69,16 +69,16 @@ class Robot:
         for neuron_name in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuron_name):
                 joint_name = self.nn.Get_Motor_Neurons_Joint(neuron_name)
-                desired_angle = self.nn.Get_Value_Of(neuron_name)
+                desired_angle = c.JOINT_MOTOR_RANGE * self.nn.Get_Value_Of(neuron_name)
                 link1, link2 = joint_name.split('_')
 
 
-                # Control legs on the same angle
-                if 'Lower' in joint_name:
-                    continue
-                if link1 == 'Torso' and link2.endswith('Leg'):
-                    lower_joint_name = f'{link2}_Lower{link2}'
-                    self.motors[lower_joint_name].set_value(self.robot_id, desired_angle*c.JOINT_MOTOR_RANGE)
+                # # Control legs on the same angle
+                # if 'Lower' in joint_name:
+                #     continue
+                # if link1 == 'Torso' and link2.endswith('Leg'):
+                #     lower_joint_name = f'{link2}_Lower{link2}'
+                #     self.motors[lower_joint_name].set_value(self.robot_id, desired_angle*c.JOINT_MOTOR_RANGE)
 
 
                 # Joint angle consistency fitness
@@ -92,7 +92,7 @@ class Robot:
                     self.front_right_leg_angles.append(desired_angle)
 
 
-                self.motors[joint_name].set_value(self.robot_id, desired_angle*c.JOINT_MOTOR_RANGE)
+                self.motors[joint_name].set_value(self.robot_id, desired_angle)
                 # print('test:', neuron_name, joint_name, desired_angle)
 
     def get_fitness(self):

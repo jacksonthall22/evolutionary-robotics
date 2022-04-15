@@ -6,6 +6,7 @@ from pyrosim.model import MODEL
 from pyrosim.sdf   import SDF
 from pyrosim.urdf  import URDF
 from pyrosim.joint import JOINT
+import math
 
 SDF_FILETYPE  = 0
 URDF_FILETYPE = 1
@@ -90,9 +91,24 @@ def Send_Cube(name="default", pos=None, size=None):
     linkNamesToIndices[name] = availableLinkIndex
     availableLinkIndex = availableLinkIndex + 1
 
-def Send_Joint(parent, child, type, position, joint_axis, initial_angle=None):
-    joint = JOINT('_'.join((parent, child)), parent, child, type, position)
-    joint.Save(f, joint_axis, initial_angle)
+def Send_Joint(parent,
+               child,
+               type,
+               position,
+               axis,
+               initial_rot=None,
+               lower_limit=-math.pi,
+               upper_limit=math.pi):
+    joint = JOINT('_'.join((parent, child)),
+                  parent,
+                  child,
+                  type,
+                  position,
+                  axis,
+                  initial_rot,
+                  lower_limit,
+                  upper_limit)
+    joint.Save(f)
 
 def Send_Motor_Neuron(name, jointName):
     f.write('    <neuron name = "' + str(name) + '" type = "motor"  jointName = "' + jointName + '" />\n')
