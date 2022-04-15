@@ -8,6 +8,16 @@ import os
 from math import sqrt
 from statistics import mean, stdev
 from icecream import ic
+from constants import FORWARD_POS_SCALE, \
+                      FORWARD_VEL_SCALE, \
+                      HEIGHT_SCALE, \
+                      HEIGHT_CONSISTENCY_SCALE, \
+                      BALANCING_SCALE, \
+                      UPRIGHT_SCALE, \
+                      LEG_MOVEMENT_SCALE, \
+                      LEG_CONSISTENCY_SCALE, \
+                      LEGS_FITNESS_SCALE, \
+                      CONTACT_SCALE
 
 
 class Robot:
@@ -29,7 +39,7 @@ class Robot:
         # Fitness Tracking
         self.torso_z_coords = []
         self.torso_rotations = []
-        self.y_velocities = []
+        self.velocities = []
         self.ang_velocities = []
         self.back_left_leg_angles = []
         self.back_right_leg_angles = []
@@ -63,7 +73,7 @@ class Robot:
 
         # Momentum & balancing fitness
         velocity, ang_velocity = pyb.getBaseVelocity(self.robot_id, 0)
-        self.y_velocities.append(velocity[1])
+        self.velocities.append(velocity)
         self.ang_velocities.append(ang_velocity)
 
         for neuron_name in self.nn.Get_Neuron_Names():
@@ -97,17 +107,13 @@ class Robot:
 
     def get_fitness(self):
 
-        FORWARD_SCALE = 5
-        HEIGHT_SCALE = 0
-        HEIGHT_CONSISTENCY_SCALE = 3
-        BALANCING_SCALE = 3
-        LEG_MOVEMENT_SCALE = 1
-        LEG_CONSISTENCY_SCALE = 3
-        LEGS_FITNESS_SCALE = 1
-
-        # Move forward
+        # Maximize forward distance
         torso_x_coord = pyb.getLinkState(self.robot_id, 0)[0][0]
-        forward_fitness = FORWARD_SCALE * min(-torso_x_coord, -3 * torso_x_coord)
+        forward_fitness = FORWARD_POS_SCALE * min(-torso_x_coord, -3 * torso_x_coord)
+
+        # Maximize forward velocity
+        mean_x_velocity = mean(x for x, _, _ in self.velocities)
+        forward_vel_fitness = FORWARD_VEL_SCALE * min(-mean_x_velocity, -3 * mean_x_velocity)
 
         # Maximize height
         height_fitness = HEIGHT_SCALE * mean(map(sqrt, self.torso_z_coords))
@@ -118,13 +124,20 @@ class Robot:
         # Minimize angular momentum
         balancing_fitness = BALANCING_SCALE * -mean(map(lambda t: sum(sqrt(abs(i)) for i in t), self.ang_velocities))
 
+        # Stay upright
+        sideways_amounts = []
+        for roll, pitch, _, _ in self.torso_rotations:
+            sideways_amounts.append(sqrt(abs(roll)) + sqrt(abs(pitch)))
+        mean_sideways_amount = mean(sideways_amounts)
+        upright_fitness = UPRIGHT_SCALE * min(-mean_sideways_amount, -3 * mean_sideways_amount)
+
         # Leg swing consistency
         leg_fitnesses = []
         for lst in (self.back_left_leg_angles,
                     self.back_right_leg_angles,
                     self.front_left_leg_angles,
                     self.front_right_leg_angles):
-            # Reward changing angles a lot
+            # Reward changing angles
             directions = []      # -1 or 1
             absolute_diffs = []  # abs(difference)
             for a1, a2 in zip(lst[:-1], lst[1:]):
@@ -136,7 +149,7 @@ class Robot:
                     directions.append(-1)
             leg_movement_fitness = LEG_MOVEMENT_SCALE * mean(absolute_diffs)
 
-            # Penalize changing directions
+            # Penalize changing direction of motion
             direction_changes = []
             for dir1, dir2 in zip(directions[:-1], directions[1:]):
                 if dir1 == dir2:
@@ -149,19 +162,32 @@ class Robot:
             leg_fitnesses.append(sqrt(leg_movement_fitness) + leg_consistency_fitness)
         legs_fitness = LEGS_FITNESS_SCALE * mean(leg_fitnesses)
 
+        # Keep lower legs in contact with the ground
+        contact_points = []
+        for sensor_name, sensor in self.sensors.items():
+            if 'Lower' in sensor_name and 'Leg' in sensor_name:
+                contact_points.extend(sensor.values)
+        contact_fitness = CONTACT_SCALE * mean(contact_points)
+
         # ic(forward_fitness)
+        # ic(forward_vel_fitness)
         # ic(height_fitness)
         # ic(balancing_fitness)
+        # ic(upright_fitness)
         # ic(leg_movement_fitness)
         # ic(leg_consistency_fitness)
         # ic(legs_fitness)
+        # ic(contact_fitness)
         # 1/0
 
         fitness = forward_fitness \
+                  + forward_vel_fitness \
                   + height_fitness \
                   + height_consistency_fitness \
                   + balancing_fitness \
-                  + legs_fitness
+                  + upright_fitness \
+                  + legs_fitness \
+                  + contact_fitness
 
         os.system(f'del fitness{self.id}.txt')
         with open(f'tmp{self.id}.txt', 'w') as f:
