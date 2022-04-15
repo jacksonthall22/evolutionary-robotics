@@ -14,16 +14,3 @@ START_NUM_MUTATIONS = 5
 MAX_JOINT_FORCE = 40
 
 JOINT_MOTOR_RANGE = 0.2
-
-AMPLITUDE = np.pi / 6
-FREQUENCY = 11
-PHASE_OFFSET = 0
-# Front joint angles
-TARGET_ANGLES_FRONT = AMPLITUDE * np.sin(FREQUENCY
-                                         * np.linspace(0, 2*np.pi, TIME_STEPS)
-                                         + PHASE_OFFSET)
-# Back joint angles
-TARGET_ANGLES_BACK = AMPLITUDE * np.sin(FREQUENCY
-                                        * np.linspace(0, 2*np.pi, TIME_STEPS)
-                                        + PHASE_OFFSET)
-

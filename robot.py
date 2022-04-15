@@ -52,10 +52,7 @@ class Robot:
     def prepare_to_act(self):
         self.motors = {}
         for joint_name in ps.jointNamesToIndices:
-            self.motors[joint_name] = Motor(joint_name,
-                                            amplitude=c.AMPLITUDE,
-                                            frequency=c.FREQUENCY,
-                                            phase_offset=c.PHASE_OFFSET)
+            self.motors[joint_name] = Motor(joint_name)
 
     def act(self, t):
         # Fitness tracking
