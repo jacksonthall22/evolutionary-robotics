@@ -2,6 +2,11 @@ from solution import Solution
 from constants import NUM_GENERATIONS, POPULATION_SIZE
 import copy
 import os
+from datetime import datetime
+import constants as c
+
+BEST_BRAINS_PATH = 'best_brains'
+BEST_BRAIN_FILENAME = 'best_brain.nndf'
 
 
 class ParallelHillClimber:
@@ -65,4 +70,31 @@ class ParallelHillClimber:
     def show_best(self):
         best_parent = max(self.parents.values(), key=lambda p: p.fitness)
         best_parent.start_simulation('GUI')
-        best_parent.create_brain(filename='best_brain.nndf')
+
+    def save_population(self):
+        now = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
+
+        if not os.path.exists(f'{BEST_BRAINS_PATH}/{now}'):
+            os.makedirs(f'{BEST_BRAINS_PATH}/{now}', exist_ok=True)
+
+        with open(f'{BEST_BRAINS_PATH}/{now}/fitness_constants.txt', 'w') as f:
+            f.write(f'TIME_STEPS = {c.TIME_STEPS}')
+            f.write(f'TICKS_PER_SEC = {c.TICKS_PER_SEC}')
+            f.write(f'NUM_GENERATIONS = {c.NUM_GENERATIONS}')
+            f.write(f'POPULATION_SIZE = {c.POPULATION_SIZE}')
+            f.write(f'FORWARD_POS_SCALE = {c.FORWARD_POS_SCALE}')
+            f.write(f'FORWARD_VEL_SCALE = {c.FORWARD_VEL_SCALE}\n')
+            f.write(f'HEIGHT_SCALE = {c.HEIGHT_SCALE}')
+            f.write(f'HEIGHT_CONSISTENCY_SCALE = {c.HEIGHT_CONSISTENCY_SCALE}')
+            f.write(f'BALANCING_SCALE = {c.BALANCING_SCALE}')
+            f.write(f'UPRIGHT_SCALE = {c.UPRIGHT_SCALE}')
+            f.write(f'LEG_MOVEMENT_SCALE = {c.LEG_MOVEMENT_SCALE}')
+            f.write(f'LEG_CONSISTENCY_SCALE = {c.LEG_CONSISTENCY_SCALE}')
+            f.write(f'LEGS_FITNESS_SCALE = {c.LEGS_FITNESS_SCALE}')
+            f.write(f'CONTACT_SCALE = {c.CONTACT_SCALE}')
+
+        for i, parent in enumerate(sorted(self.parents.values(),
+                                          key=lambda r: r.fitness,
+                                          reverse=True)):
+            brain_filepath = f'{BEST_BRAINS_PATH}/{now}/brain_{i}___f={parent.fitness:.6f}.nndf'
+            parent.create_brain(filename=brain_filepath)
