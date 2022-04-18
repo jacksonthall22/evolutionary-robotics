@@ -18,6 +18,7 @@ from constants import FORWARD_POS_SCALE, \
                       LEG_CONSISTENCY_SCALE, \
                       LEGS_FITNESS_SCALE, \
                       CONTACT_SCALE
+from utils import delete_files#, HideOutput
 
 
 class Robot:
@@ -29,7 +30,7 @@ class Robot:
         self.sensors = {}
         self.motors = {}
         self.nn = NEURAL_NETWORK(brain_filename)
-        os.system(f'del brain{id}.nndf')
+        delete_files(file=f'brain{id}.nndf')
 
         self.robot_id = pyb.loadURDF('body.urdf')
         ps.Prepare_To_Simulate(self.robot_id)
@@ -189,7 +190,6 @@ class Robot:
                   + legs_fitness \
                   + contact_fitness
 
-        os.system(f'del fitness{self.id}.txt')
         with open(f'tmp{self.id}.txt', 'w') as f:
             f.write(str(fitness))
         os.system(f'rename tmp{self.id}.txt fitness{self.id}.txt')

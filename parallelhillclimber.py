@@ -4,6 +4,7 @@ import copy
 import os
 from datetime import datetime
 import constants as c
+from utils import chunkify, pluralize, delete_files
 
 BEST_BRAINS_PATH = 'best_brains'
 BEST_BRAIN_FILENAME = 'best_brain.nndf'
@@ -11,8 +12,11 @@ BEST_BRAIN_FILENAME = 'best_brain.nndf'
 
 class ParallelHillClimber:
     def __init__(self):
-        os.system('del brain*.nndf')
-        os.system('del fitness*.txt')
+        delete_files(file_pattern='brain*.nndf')
+        delete_files(file_pattern='fitness*.txt')
+        delete_files(file_pattern='tmp*.txt')
+        # os.system('del brain*.nndf')
+        # os.system('del fitness*.txt')
 
         self.nextAvailableID = 0
 
@@ -56,13 +60,16 @@ class ParallelHillClimber:
             if child.fitness > parent.fitness:
                 self.parents[i] = child
 
-    def evaluate(self, solutions):
-        for i, s in solutions.items():
-            s.start_simulation('DIRECT')
+    def evaluate(self, solutions, max_concurrent=c.MAX_CONCURRENT_SIMS):
+        chunks = list(chunkify(solutions.items(), chunk_size=max_concurrent))
+        for i, solutions_chunk in enumerate(chunks):
+            print(f'\nEvaluating chunk {i+1}/{len(chunks)} ({pluralize(len(solutions_chunk), "robot")})')
+            for _, s in solutions_chunk:
+                s.start_simulation('DIRECT')
 
-        for i, s in solutions.items():
-            s.wait_for_simulation_to_end()
-            # print('test: solution fitness:', s.fitness)
+            for _, s in solutions_chunk:
+                s.wait_for_simulation_to_end()
+                # print('test: solution fitness:', s.fitness)
 
     def __str__(self):
         return '\n' + '\n'.join((f'[{i}] {p.fitness:9.6f}' for i, p in self.parents.items())) + '\n'

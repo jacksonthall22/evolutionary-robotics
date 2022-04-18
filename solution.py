@@ -7,6 +7,8 @@ import time
 import constants as c
 import operator as op
 from math import radians
+from utils import delete_files
+
 
 class Solution:
     def __init__(self, id):
@@ -28,15 +30,16 @@ class Solution:
 
         while not os.path.exists(fitness_filename):
             time.sleep(0.01)
-        for _ in range(1000):
+        for i in range(1000):
             try:
                 with open(fitness_filename, 'r') as f:
                     self.fitness = float(f.read())
                 break
             except PermissionError:
-                pass
+                if i == 999:
+                    print('test: PermissionError')
 
-        os.system(f'del fitness{self.id}.txt')
+        delete_files(file=f'fitness{self.id}.txt')
 
     def evaluate(self, direct_or_gui):
         self.start_simulation(direct_or_gui)
