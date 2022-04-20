@@ -5,25 +5,31 @@ import os
 from datetime import datetime
 import constants as c
 from utils import chunkify, pluralize, delete_files
+import numpy as np
+import math
+from icecream import ic
 
 BEST_BRAINS_PATH = 'best_brains'
 BEST_BRAIN_FILENAME = 'best_brain.nndf'
 
 
 class ParallelHillClimber:
-    def __init__(self):
+    def __init__(self, seed_weights=None):
         delete_files(file_pattern='brain*.nndf')
         delete_files(file_pattern='fitness*.txt')
         delete_files(file_pattern='tmp*.txt')
-        # os.system('del brain*.nndf')
-        # os.system('del fitness*.txt')
 
         self.nextAvailableID = 0
 
         self.parents = {}
         for i in range(POPULATION_SIZE):
-            self.parents[i] = Solution(self.nextAvailableID)
+            self.parents[i] = [Solution(self.nextAvailableID, preset_weights=seed_weights), None]
             self.nextAvailableID += 1
+
+        # If starting from a single 'seed' brain, mutate all parents right away
+        if seed_weights is not None:
+            for sol, _ in self.parents.values():
+                sol.mutate(num_mutations=c.NUM_MUTATIONS_FROM_SEED)
 
         self.children = None
 
@@ -46,9 +52,10 @@ class ParallelHillClimber:
     def spawn(self):
         self.children = {}
 
-        for i, parent in self.parents.items():
-            self.children[i] = copy.deepcopy(parent)
-            self.children[i].set_id(self.nextAvailableID)
+        for i, (parent, parent_fitness) in self.parents.items():
+            child = copy.deepcopy(parent)
+            child.set_id(self.nextAvailableID)
+            self.children[i] = [child, None]
             self.nextAvailableID += 1
 
     def mutate(self, gen):
@@ -71,52 +78,71 @@ class ParallelHillClimber:
             child.mutate(num_mutations=num_mutations)
 
     def select(self):
-        for i, (child, parent) in enumerate(zip(self.children.values(), self.parents.values())):
+        for i, ((child, child_fitness), (parent, parent_fitness)) in \
+                enumerate(zip(self.children.values(), self.parents.values())):
             if child.fitness > parent.fitness:
-                self.parents[i] = child
+                self.parents[i] = [child, None]
+            else:
+                self.parents[i][1] = parent.fitness
 
     def evaluate(self, solutions, max_concurrent=c.MAX_CONCURRENT_SIMS):
-        chunks = list(chunkify(solutions.items(), chunk_size=max_concurrent))
+        chunks = list(chunkify(solutions.values(), chunk_size=max_concurrent))
         for i, solutions_chunk in enumerate(chunks):
             print(f'\nEvaluating chunk {i+1}/{len(chunks)} ({pluralize(len(solutions_chunk), "robot")})')
-            for _, s in solutions_chunk:
-                s.start_simulation('DIRECT')
+            for solution, fitness in solutions_chunk:
+                if fitness is None:
+                    solution.start_simulation('DIRECT')
+                else:
+                    print('test: skipping simulation')
 
-            for _, s in solutions_chunk:
-                s.wait_for_simulation_to_end()
+            for j, (solution, fitness) in enumerate(solutions_chunk):
+                if fitness is None:
+                    solution.wait_for_simulation_to_end()
+
+                solutions[i*max_concurrent + j][1] = solution.fitness
                 # print('test: solution fitness:', s.fitness)
 
     def __str__(self):
-        return '\n' + '\n'.join((f'[{i}] {p.fitness:9.6f}' for i, p in self.parents.items())) + '\n'
+        return '\n' + '\n'.join((f'[{i}] {p.fitness:9.6f} {"(updated)" if f is None else "(same)"}'
+                                 for i, (p, f) in self.parents.items())) + '\n'
 
     def show_best(self):
-        best_parent = max(self.parents.values(), key=lambda p: p.fitness)
+        best_parent = max((p[0] for p in self.parents.values()), key=lambda p: p.fitness)
         best_parent.start_simulation('GUI')
+        best_parent.wait_for_simulation_to_end()
 
     def save_population(self):
         now = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
 
-        if not os.path.exists(f'{BEST_BRAINS_PATH}/{now}'):
-            os.makedirs(f'{BEST_BRAINS_PATH}/{now}', exist_ok=True)
+        output_path = f'{BEST_BRAINS_PATH}/{now}'
+        if not os.path.exists(output_path):
+            os.makedirs(output_path, exist_ok=True)
 
-        with open(f'{BEST_BRAINS_PATH}/{now}/fitness_constants.txt', 'w') as f:
-            f.write(f'TIME_STEPS = {c.TIME_STEPS}')
-            f.write(f'TICKS_PER_SEC = {c.TICKS_PER_SEC}')
-            f.write(f'NUM_GENERATIONS = {c.NUM_GENERATIONS}')
-            f.write(f'POPULATION_SIZE = {c.POPULATION_SIZE}')
-            f.write(f'FORWARD_POS_SCALE = {c.FORWARD_POS_SCALE}')
+        with open(f'{output_path}/fitness_constants.txt', 'w') as f:
+            f.write(f'TIME_STEPS = {c.TIME_STEPS}\n')
+            f.write(f'TICKS_PER_SEC = {c.TICKS_PER_SEC}\n')
+            f.write(f'NUM_GENERATIONS = {c.NUM_GENERATIONS}\n')
+            f.write(f'POPULATION_SIZE = {c.POPULATION_SIZE}\n')
+            f.write('\n')
+            f.write(f'CUBE_HEIGHT_SCALE = {c.CUBE_HEIGHT_SCALE}\n')
+            f.write(f'FORWARD_POS_SCALE = {c.FORWARD_POS_SCALE}\n')
             f.write(f'FORWARD_VEL_SCALE = {c.FORWARD_VEL_SCALE}\n')
-            f.write(f'HEIGHT_SCALE = {c.HEIGHT_SCALE}')
-            f.write(f'HEIGHT_CONSISTENCY_SCALE = {c.HEIGHT_CONSISTENCY_SCALE}')
-            f.write(f'BALANCING_SCALE = {c.BALANCING_SCALE}')
-            f.write(f'UPRIGHT_SCALE = {c.UPRIGHT_SCALE}')
-            f.write(f'LEG_MOVEMENT_SCALE = {c.LEG_MOVEMENT_SCALE}')
-            f.write(f'LEG_CONSISTENCY_SCALE = {c.LEG_CONSISTENCY_SCALE}')
-            f.write(f'LEGS_FITNESS_SCALE = {c.LEGS_FITNESS_SCALE}')
-            f.write(f'CONTACT_SCALE = {c.CONTACT_SCALE}')
+            f.write(f'HEIGHT_SCALE = {c.HEIGHT_SCALE}\n')
+            f.write(f'HEIGHT_CONSISTENCY_SCALE = {c.HEIGHT_CONSISTENCY_SCALE}\n')
+            f.write(f'BALANCING_SCALE = {c.BALANCING_SCALE}\n')
+            f.write(f'UPRIGHT_SCALE = {c.UPRIGHT_SCALE}\n')
+            f.write(f'LEG_MOVEMENT_SCALE = {c.LEG_MOVEMENT_SCALE}\n')
+            f.write(f'LEG_CONSISTENCY_SCALE = {c.LEG_CONSISTENCY_SCALE}\n')
+            f.write(f'LEGS_FITNESS_SCALE = {c.LEGS_FITNESS_SCALE}\n')
+            f.write(f'CONTACT_SCALE = {c.CONTACT_SCALE}\n')
 
-        for i, parent in enumerate(sorted(self.parents.values(),
-                                          key=lambda r: r.fitness,
-                                          reverse=True)):
-            brain_filepath = f'{BEST_BRAINS_PATH}/{now}/brain_{i}___f={parent.fitness:.6f}.nndf'
-            parent.create_brain(filename=brain_filepath)
+        for i, (parent, fitness) in enumerate(self.parents.values()):
+            weights_filepath = f'{output_path}/weights_{i}___f={parent.fitness:.6f}.npy'
+            np.save(weights_filepath, parent.weights, allow_pickle=True)
+
+        best_weights_filepath = f'{output_path}/best_weights.npy'
+        np.save(best_weights_filepath,
+                max(self.parents.values(), key=lambda p: p[0].fitness)[0].weights,
+                allow_pickle=True)
+
+        print(f'Saved {len(self.parents.items())} brain weights to {output_path}.')

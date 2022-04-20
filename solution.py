@@ -12,9 +12,14 @@ from utils import delete_files
 
 
 class Solution:
-    def __init__(self, id):
+    def __init__(self, id: int, preset_weights: np.ndarray = None):
         self.id = id
-        self.weights = np.random.rand(c.NUM_SENSOR_NEURONS, c.NUM_MOTOR_NEURONS) * 2 - 1
+
+        if preset_weights is None:
+            self.weights = np.random.rand(c.NUM_SENSOR_NEURONS, c.NUM_MOTOR_NEURONS) * 2 - 1
+        else:
+            self.weights = preset_weights
+
         self.fitness = None
 
     def set_id(self, id):
@@ -30,7 +35,7 @@ class Solution:
         fitness_filename = f'fitness{self.id}.txt'
 
         while not os.path.exists(fitness_filename):
-            time.sleep(0.01)
+            time.sleep(0.1)
         for i in range(1000):
             try:
                 with open(fitness_filename, 'r') as f:
