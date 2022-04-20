@@ -10,8 +10,8 @@ USE_SEED_WEIGHTS = 0
 USE_MOST_RECENT = 0
 
 if USE_MOST_RECENT:
-    POPULATION_PATH = 'best_brains/2022-04-19_09-00-57_PM'
-    BEST_WEIGHTS_PATH = f'{POPULATION_PATH}/best_weights.npy'
+    POPULATION_PATH = os.path.join('best_brains', '2022-04-19_09-00-57_PM')
+    BEST_WEIGHTS_PATH = os.path.join(POPULATION_PATH, 'best_weights.npy')
 else:
     BEST_WEIGHTS_PATH = os.path.join(max(pathlib.Path('best_brains').glob('*/'), key=os.path.getmtime), 'best_weights.npy')
 SEED_WEIGHTS = np.load(BEST_WEIGHTS_PATH, allow_pickle=True)
