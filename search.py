@@ -5,12 +5,12 @@ import numpy as np
 import os
 import pathlib
 
-DO_SEARCH = 0
+DO_SEARCH = 1
 USE_SEED_WEIGHTS = 0
-USE_MOST_RECENT = 1
+USE_MOST_RECENT = 0
 
 if USE_MOST_RECENT:
-    POPULATION_PATH = 'best_brains/2022-04-19_02-00-08_PM'
+    POPULATION_PATH = 'best_brains/2022-04-19_09-00-57_PM'
     BEST_WEIGHTS_PATH = f'{POPULATION_PATH}/best_weights.npy'
 else:
     BEST_WEIGHTS_PATH = os.path.join(max(pathlib.Path('best_brains').glob('*/'), key=os.path.getmtime), 'best_weights.npy')
