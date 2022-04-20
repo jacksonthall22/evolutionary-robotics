@@ -52,8 +52,23 @@ class ParallelHillClimber:
             self.nextAvailableID += 1
 
     def mutate(self, gen):
-        for i, child in self.children.items():
-            child.mutate(gen)
+        for i, (child, _) in self.children.items():
+            '''https://www.desmos.com/calculator/bcasuzmogk'''
+            m1 = c.START_NUM_MUTATIONS
+            m2 = c.END_NUM_MUTATIONS
+            t = gen
+            t_final = c.NUM_GENERATIONS
+
+            # End at 1 (linear)
+            num_mutations = math.ceil(m1 - ((m1 - m2 + 1) * t) / t_final)
+
+            # End at END_NUM_MUTATIONS (linear)
+            # num_mutations = max(1, math.ceil(m1 * (1 - t/t_final)))
+
+            # Decay quadratically
+            num_mutations = math.floor(t_final / (t + (t_final / (m1 - m2))) + m2)
+
+            child.mutate(num_mutations=num_mutations)
 
     def select(self):
         for i, (child, parent) in enumerate(zip(self.children.values(), self.parents.values())):
