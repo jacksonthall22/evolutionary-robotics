@@ -35,7 +35,7 @@ def delete_files(*,
         try:
             os.remove(file)
         except OSError:
-            print('error: OSError while deleting file "{file}"')
+            print(f'error: OSError while deleting file "{file}"')
 
 
 ''' Doesn't work \/ '''
