@@ -374,7 +374,7 @@
        <child  link="ArmBase"/>
        <origin rpy="0 0 0" xyz="-0.65 0 1.1" />
        <axis xyz="0 0 1"/>
-       <limit effort="0.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="0.0"/>
+       <limit effort="0.0" lower="-0.17453292519943295" upper="0.17453292519943295" velocity="0.0"/>
     </joint>
     <link name="ArmBase">
         <inertial>
@@ -403,7 +403,7 @@
        <child  link="Arm1"/>
        <origin rpy="0 1.0471975511965976 0" xyz="0 0 0.1" />
        <axis xyz="0 1 0"/>
-       <limit effort="0.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="0.0"/>
+       <limit effort="0.0" lower="-1.5707963267948966" upper="0.08726646259971647" velocity="0.0"/>
     </joint>
     <link name="Arm1">
         <inertial>
@@ -432,7 +432,7 @@
        <child  link="Arm2"/>
        <origin rpy="-0.0 -2.0943951023931953 -0.0" xyz="0 0 0.65" />
        <axis xyz="0 1 0"/>
-       <limit effort="0.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="0.0"/>
+       <limit effort="0.0" lower="-0.7853981633974483" upper="0.7853981633974483" velocity="0.0"/>
     </joint>
     <link name="Arm2">
         <inertial>
@@ -461,7 +461,7 @@
        <child  link="Arm3"/>
        <origin rpy="0 -0.5 0" xyz="0 0 0.65" />
        <axis xyz="0 1 0"/>
-       <limit effort="0.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="0.0"/>
+       <limit effort="0.0" lower="-0.7853981633974483" upper="0.7853981633974483" velocity="0.0"/>
     </joint>
     <link name="Arm3">
         <inertial>
@@ -519,7 +519,7 @@
        <child  link="Grabber1"/>
        <origin rpy="0 0 0" xyz="0.05 0 0.05" />
        <axis xyz="0 1 0"/>
-       <limit effort="0.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="0.0"/>
+       <limit effort="0.0" lower="-1.5707963267948966" upper="1.5707963267948966" velocity="0.0"/>
     </joint>
     <link name="Grabber1">
         <inertial>
@@ -548,7 +548,7 @@
        <child  link="Grabber2"/>
        <origin rpy="0 0 0" xyz="-0.05 0 0.05" />
        <axis xyz="0 1 0"/>
-       <limit effort="0.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="0.0"/>
+       <limit effort="0.0" lower="-1.5707963267948966" upper="1.5707963267948966" velocity="0.0"/>
     </joint>
     <link name="Grabber2">
         <inertial>

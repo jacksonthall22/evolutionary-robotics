@@ -1,3 +1,4 @@
+from typing import Literal
 import pyrosim.pyrosim as pyrosim
 import math
 import random
@@ -19,7 +20,7 @@ class Solution:
     def set_id(self, id):
         self.id = id
 
-    def start_simulation(self, direct_or_gui):
+    def start_simulation(self, direct_or_gui: Literal['DIRECT', 'GUI']):
         self.create_world()
         self.create_body()
         self.create_brain()
@@ -45,22 +46,26 @@ class Solution:
         self.start_simulation(direct_or_gui)
         self.wait_for_simulation_to_end()
 
+    X_DISTANCE = 1.775
+    TABLE_SIZE = (2, 1, 1.25)
+    TABLE_SIZE_X, TABLE_SIZE_Y, TABLE_SIZE_Z = TABLE_SIZE
     def create_world(self):
         pyrosim.Start_SDF('world.sdf')
-
-        X_DISTANCE = 10
-
-        BOX_1_SIZE = (1, 1, 1.25)
-        BOX_1_SIZE_X, BOX_1_SIZE_Y, BOX_1_SIZE_Z = BOX_1_SIZE
-        pyrosim.Send_Cube(name='Box1', pos=(-X_DISTANCE, 0, BOX_1_SIZE_Z/2), size=BOX_1_SIZE)
-
-        BOX_2_SIZE = (0.1, 0.1, 0.1)
-        BOX_2_SIZE_X, BOX_2_SIZE_Y, BOX_2_SIZE_Z = BOX_2_SIZE
-        pyrosim.Send_Cube(name='Box2', pos=(-X_DISTANCE, 0, BOX_1_SIZE_Z+BOX_2_SIZE_Z/2 + 0.25), size=BOX_2_SIZE)
-
+        pyrosim.Send_Cube(name='Table',
+                          pos=(-Solution.X_DISTANCE, 0, Solution.TABLE_SIZE_Z/2),
+                          size=Solution.TABLE_SIZE)
         pyrosim.End()
 
     def create_body(self):
+
+        pyrosim.Start_URDF('cube.urdf')
+        CUBE_SIZE = (0.1, 0.1, 0.1)
+        CUBE_SIZE_X, CUBE_SIZE_Y, CUBE_SIZE_Z = CUBE_SIZE
+        pyrosim.Send_Cube(name='Cube',
+                          pos=(-Solution.X_DISTANCE, 0, Solution.TABLE_SIZE_Z + CUBE_SIZE_Z / 2),
+                          size=CUBE_SIZE)
+        pyrosim.End()
+
         pyrosim.Start_URDF('body.urdf')
 
         def add_tup(t1: tuple, t2: tuple) -> tuple:
@@ -234,11 +239,19 @@ class Solution:
         # Arm Base Joint
         ARM_BASE_SIZE = (0.2, 0.2, 0.1)
         ARM_BASE_SIZE_X, ARM_BASE_SIZE_Y, ARM_BASE_SIZE_Z = ARM_BASE_SIZE
+        ARM_BASE_LOWER_LIMIT = radians(-10)
+        ARB_BASE_UPPER_LIMIT = radians(10)
         ARM_BASE_JOINT = add_tup(TORSO_POS, (-TORSO_SIZE_X/2 + ARM_BASE_SIZE_X/2,
                                              0,
                                              TORSO_SIZE_Z/2))
-        pyrosim.Send_Joint(parent='Torso', child='ArmBase', type='revolute',
-                           position=ARM_BASE_JOINT, axis=(0, 0, 1), initial_rot=None)
+        pyrosim.Send_Joint(parent='Torso',
+                           child='ArmBase',
+                           type='revolute',
+                           position=ARM_BASE_JOINT,
+                           axis=(0, 0, 1),
+                           initial_rot=None,
+                           lower_limit=ARM_BASE_LOWER_LIMIT,
+                           upper_limit=ARB_BASE_UPPER_LIMIT)
 
         # Arm Base Link
         ARM_BASE_POS = (0, 0, ARM_BASE_SIZE_Z/2)
@@ -251,8 +264,16 @@ class Solution:
                        0,
                        ARM_BASE_SIZE_Z)
         ARM_1_INITIAL_ROT = (0, math.pi/3, 0)
-        pyrosim.Send_Joint(parent='ArmBase', child='Arm1', type='revolute',
-                           position=ARM_1_JOINT, axis=(0, 1, 0), initial_rot=ARM_1_INITIAL_ROT)
+        ARM_1_LOWER_LIMIT = radians(-90)
+        ARM_1_UPPER_LIMIT = radians(5)
+        pyrosim.Send_Joint(parent='ArmBase',
+                           child='Arm1',
+                           type='revolute',
+                           position=ARM_1_JOINT,
+                           axis=(0, 1, 0),
+                           initial_rot=ARM_1_INITIAL_ROT,
+                           lower_limit=ARM_1_LOWER_LIMIT,
+                           upper_limit=ARM_1_UPPER_LIMIT)
 
         # Arm 1 Link
         ARM_1_POS = (0,
@@ -267,8 +288,16 @@ class Solution:
                        0,
                        ARM_1_SIZE_Z)
         ARM_2_INITIAL_ROT = tuple(np.multiply(ARM_1_INITIAL_ROT, -2))
-        pyrosim.Send_Joint(parent='Arm1', child='Arm2', type='revolute',
-                           position=ARM_2_JOINT, axis=(0, 1, 0), initial_rot=ARM_2_INITIAL_ROT)
+        ARM_2_LOWER_LIMIT = radians(-45)
+        ARM_2_UPPER_LIMIT = radians(45)
+        pyrosim.Send_Joint(parent='Arm1',
+                           child='Arm2',
+                           type='revolute',
+                           position=ARM_2_JOINT,
+                           axis=(0, 1, 0),
+                           initial_rot=ARM_2_INITIAL_ROT,
+                           lower_limit=ARM_2_LOWER_LIMIT,
+                           upper_limit=ARM_2_UPPER_LIMIT)
 
         # Arm 2 Link
         ARM_2_POS = (0,
@@ -283,8 +312,16 @@ class Solution:
                        0,
                        ARM_2_SIZE_Z)
         ARM_3_INITIAL_ROT = (0, -0.5, 0)
-        pyrosim.Send_Joint(parent='Arm2', child='Arm3', type='revolute',
-                           position=ARM_3_JOINT, axis=(0, 1, 0), initial_rot=ARM_3_INITIAL_ROT)
+        ARM_3_LOWER_LIMIT = radians(-45)
+        ARM_3_UPPER_LIMIT = radians(45)
+        pyrosim.Send_Joint(parent='Arm2',
+                           child='Arm3',
+                           type='revolute',
+                           position=ARM_3_JOINT,
+                           axis=(0, 1, 0),
+                           initial_rot=ARM_3_INITIAL_ROT,
+                           lower_limit=ARM_3_LOWER_LIMIT,
+                           upper_limit=ARM_3_UPPER_LIMIT)
 
         # Arm 3 Joint
         ARM_3_POS = (0, 0, ARM_3_SIZE_Z/2)
@@ -305,14 +342,22 @@ class Solution:
         pyrosim.Send_Cube(name='Wrist', pos=WRIST_POS, size=WRIST_SIZE)
 
         # Grabber 1 Joint
+        GRABBER_LOWER_LIMIT = radians(-90)
+        GRABBER_UPPER_LIMIT = radians(90)
         GRABBER_1_SIZE = (0.05, 0.05, 0.2)
         GRABBER_1_SIZE_X, GRABBER_1_SIZE_Y, GRABBER_1_SIZE_Z = GRABBER_1_SIZE
         GRABBER_1_JOINT = (WRIST_SIZE_X/2,
                            0,
                            WRIST_SIZE_Z)
         GRABBER_1_INITIAL_ROT = (0, 0, 0)
-        pyrosim.Send_Joint(parent='Wrist', child='Grabber1', type='revolute',
-                           position=GRABBER_1_JOINT, axis=(0, 1, 0), initial_rot=GRABBER_1_INITIAL_ROT)
+        pyrosim.Send_Joint(parent='Wrist',
+                           child='Grabber1',
+                           type='revolute',
+                           position=GRABBER_1_JOINT,
+                           axis=(0, 1, 0),
+                           initial_rot=GRABBER_1_INITIAL_ROT,
+                           lower_limit=GRABBER_LOWER_LIMIT,
+                           upper_limit=GRABBER_UPPER_LIMIT)
 
         # Grabber 1 Link
         GRABBER_1_POS = (GRABBER_1_SIZE_X/2,
@@ -327,8 +372,14 @@ class Solution:
                            0,
                            WRIST_SIZE_Z)
         GRABBER_2_INITIAL_ROT = tuple(np.multiply(GRABBER_1_INITIAL_ROT, -1))
-        pyrosim.Send_Joint(parent='Wrist', child='Grabber2', type='revolute',
-                           position=GRABBER_2_JOINT, axis=(0, 1, 0), initial_rot=GRABBER_2_INITIAL_ROT)
+        pyrosim.Send_Joint(parent='Wrist',
+                           child='Grabber2',
+                           type='revolute',
+                           position=GRABBER_2_JOINT,
+                           axis=(0, 1, 0),
+                           initial_rot=GRABBER_2_INITIAL_ROT,
+                           lower_limit=GRABBER_LOWER_LIMIT,
+                           upper_limit=GRABBER_UPPER_LIMIT)
 
         # Grabber 2 Link
         GRABBER_2_POS = (-GRABBER_2_SIZE_X / 2,
@@ -359,34 +410,45 @@ class Solution:
         sensor_names = [
             'Torso',
 
-            'BackRightLeg',
-            'BackLeftLeg',
-            'FrontRightLeg',
-            'FrontLeftLeg',
+            # 'BackRightLeg',
+            # 'BackLeftLeg',
+            # 'FrontRightLeg',
+            # 'FrontLeftLeg',
+            #
+            # 'LowerBackRightLeg',
+            # 'LowerBackLeftLeg',
+            # 'LowerFrontRightLeg',
+            # 'LowerFrontLeftLeg',
 
-            'LowerBackRightLeg',
-            'LowerBackLeftLeg',
-            'LowerFrontRightLeg',
-            'LowerFrontLeftLeg',
+            'Wrist',
+            'Grabber1',
+            'Grabber2',
         ]
         for sensor_name in sensor_names:
             send_sensor(sensor_name)
 
         motor_names = [
-            'Torso_BackRightHip',
-            'Torso_BackLeftHip',
-            'Torso_FrontRightHip',
-            'Torso_FrontLeftHip',
+            # 'Torso_BackRightHip',
+            # 'Torso_BackLeftHip',
+            # 'Torso_FrontRightHip',
+            # 'Torso_FrontLeftHip',
+            #
+            # 'BackRightHip_BackRightLeg',
+            # 'BackLeftHip_BackLeftLeg',
+            # 'FrontRightHip_FrontRightLeg',
+            # 'FrontLeftHip_FrontLeftLeg',
+            #
+            # 'BackRightLeg_LowerBackRightLeg',
+            # 'BackLeftLeg_LowerBackLeftLeg',
+            # 'FrontRightLeg_LowerFrontRightLeg',
+            # 'FrontLeftLeg_LowerFrontLeftLeg',
 
-            'BackRightHip_BackRightLeg',
-            'BackLeftHip_BackLeftLeg',
-            'FrontRightHip_FrontRightLeg',
-            'FrontLeftHip_FrontLeftLeg',
-
-            'BackRightLeg_LowerBackRightLeg',
-            'BackLeftLeg_LowerBackLeftLeg',
-            'FrontRightLeg_LowerFrontRightLeg',
-            'FrontLeftLeg_LowerFrontLeftLeg',
+            'ArmBase_Arm1',
+            'Arm1_Arm2',
+            'Arm2_Arm3',
+            'Arm3_Wrist',
+            'Wrist_Grabber1',
+            'Wrist_Grabber2',
         ]
         for motor_name in motor_names:
             send_motor(motor_name)
@@ -399,9 +461,7 @@ class Solution:
 
         pyrosim.End()
 
-    def mutate(self, gen):
-        num_mutations = max(1, c.START_NUM_MUTATIONS - math.floor(gen / c.NUM_GENERATIONS))
-
+    def mutate(self, num_mutations=1):
         for _ in range(num_mutations):
             idx = random.randint(0, self.weights.size-1)
             new_weight = random.uniform(-1, 1)

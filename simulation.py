@@ -18,7 +18,7 @@ class Simulation:
         pb.setGravity(0, 0, -9.8)
 
         self.world = World()
-        self.robot = Robot(id, brain_filename=brain_filename)
+        self.robot = Robot(id, brain_filepath=brain_filename)
 
         ps.Prepare_To_Simulate(self.robot.robot_id)
 
