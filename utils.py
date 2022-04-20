@@ -1,6 +1,8 @@
 from typing import Iterable, Tuple, TypeVar, List
 import glob
 import os
+import operator as op
+from statistics import mean
 from contextlib import contextmanager
 import sys
 
@@ -36,6 +38,18 @@ def delete_files(*,
             os.remove(file)
         except OSError:
             print(f'error: OSError while deleting file "{file}"')
+
+def add_tup(t1: tuple, t2: tuple) -> tuple:
+    """ Preform an elementwise sum. """
+    return tuple(map(op.add, t1, t2))
+
+def mult_tup(t1: tuple, t2: tuple) -> tuple:
+    """ Perform elementwise multiplication. """
+    return tuple(map(op.mul, t1, t2))
+
+def mean_tup(*ts: tuple) -> tuple:
+    """ Perform an elementwise mean. """
+    return tuple(map(mean, zip(*ts)))
 
 
 ''' Doesn't work \/ '''

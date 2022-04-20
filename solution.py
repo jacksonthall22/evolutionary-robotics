@@ -8,7 +8,7 @@ import time
 import constants as c
 import operator as op
 from math import radians
-from utils import delete_files
+from utils import delete_files, add_tup
 
 
 class Solution:
@@ -72,9 +72,6 @@ class Solution:
         pyrosim.End()
 
         pyrosim.Start_URDF('body.urdf')
-
-        def add_tup(t1: tuple, t2: tuple) -> tuple:
-            return tuple(map(op.add, t1, t2))
 
         # Torso
         TORSO_SIZE = (1.5, 0.5, 0.2)

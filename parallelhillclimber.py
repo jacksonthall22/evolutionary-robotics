@@ -67,12 +67,12 @@ class ParallelHillClimber:
             t_final = c.NUM_GENERATIONS
 
             # End at 1 (linear)
-            num_mutations = math.ceil(m1 - ((m1 - m2 + 1) * t) / t_final)
+            # num_mutations = math.ceil(m1 - ((m1 - m2 + 1) * t) / t_final)
 
             # End at END_NUM_MUTATIONS (linear)
             # num_mutations = max(1, math.ceil(m1 * (1 - t/t_final)))
 
-            # Decay quadratically
+            # Decay exponentially
             num_mutations = math.floor(t_final / (t + (t_final / (m1 - m2))) + m2)
 
             child.mutate(num_mutations=num_mutations)
