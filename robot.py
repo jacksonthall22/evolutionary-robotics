@@ -162,67 +162,67 @@ class Robot:
         # grabber_dist_fitness = -mean(grabber_dists)
         grabber_dist_fitness *= GRABBER_DIST_SCALE
 
-        # '''Maximize forward distance'''
-        # torso_x_coord = pyb.getLinkState(self.robot_id, 0)[0][0]
-        # forward_fitness = FORWARD_POS_SCALE * min(-torso_x_coord, -3 * torso_x_coord)
-        #
-        # '''Maximize forward velocity'''
-        # mean_x_velocity = mean(x for x, _, _ in self.velocities)
-        # forward_vel_fitness = FORWARD_VEL_SCALE * min(-mean_x_velocity, -3 * mean_x_velocity)
-        #
-        # '''Maximize height'''
-        # height_fitness = HEIGHT_SCALE * mean(map(sqrt, self.torso_z_coords))
-        #
-        # '''Maximize consistent height'''
-        # height_consistency_fitness = HEIGHT_CONSISTENCY_SCALE * -stdev(self.torso_z_coords)
-        #
-        # '''Minimize angular momentum'''
-        # balancing_fitness = BALANCING_SCALE * -mean(map(lambda t: sum(sqrt(abs(i)) for i in t), self.ang_velocities))
-        #
-        # '''Stay upright'''
-        # sideways_amounts = []
-        # for roll, pitch, _, _ in self.torso_rotations:
-        #     sideways_amounts.append(sqrt(abs(roll)) + sqrt(abs(pitch)))
-        # mean_sideways_amount = mean(sideways_amounts)
-        # upright_fitness = UPRIGHT_SCALE * min(-mean_sideways_amount, -3 * mean_sideways_amount)
-        #
-        # '''Leg swing consistency'''
-        # leg_fitnesses = []
-        # for lst in (self.back_left_leg_angles,
-        #             self.back_right_leg_angles,
-        #             self.front_left_leg_angles,
-        #             self.front_right_leg_angles):
-        #     '''Reward changing angles'''
-        #     directions = []      # -1 or 1
-        #     absolute_diffs = []  # abs(difference)
-        #     for a1, a2 in zip(lst[:-1], lst[1:]):
-        #         absolute_diffs.append(abs(a2 - a1))
-        #
-        #         if a2 - a1 > 0:
-        #             directions.append(1)
-        #         else:
-        #             directions.append(-1)
-        #     leg_movement_fitness = LEG_MOVEMENT_SCALE * mean(absolute_diffs)
-        #
-        #     '''Penalize changing direction of motion'''
-        #     direction_changes = []
-        #     for dir1, dir2 in zip(directions[:-1], directions[1:]):
-        #         if dir1 == dir2:
-        #             direction_changes.append(0)
-        #         else:
-        #             direction_changes.append(1)
-        #     leg_consistency_fitness = LEG_CONSISTENCY_SCALE * -mean(direction_changes)
-        #
-        #     '''Summarize total fitness for this leg'''
-        #     leg_fitnesses.append(sqrt(leg_movement_fitness) + leg_consistency_fitness)
-        # legs_fitness = LEGS_FITNESS_SCALE * mean(leg_fitnesses)
-        #
-        # '''Keep lower legs in contact with the ground'''
-        # contact_points = []
-        # for sensor_name, sensor in self.sensors.items():
-        #     if 'Lower' in sensor_name and 'Leg' in sensor_name:
-        #         contact_points.extend(sensor.values)
-        # contact_fitness = CONTACT_SCALE * mean(contact_points)
+        '''Maximize forward distance'''
+        torso_x_coord = pyb.getLinkState(self.robot_id, 0)[0][0]
+        forward_fitness = FORWARD_POS_SCALE * min(-torso_x_coord, -3 * torso_x_coord)
+
+        '''Maximize forward velocity'''
+        mean_x_velocity = mean(x for x, _, _ in self.velocities)
+        forward_vel_fitness = FORWARD_VEL_SCALE * -mean_x_velocity
+
+        '''Maximize height'''
+        height_fitness = HEIGHT_SCALE * mean(map(math.sqrt, self.torso_z_coords))
+
+        '''Maximize consistent height'''
+        height_consistency_fitness = HEIGHT_CONSISTENCY_SCALE * -stdev(self.torso_z_coords)
+
+        '''Minimize angular momentum'''
+        balancing_fitness = BALANCING_SCALE * -mean(map(lambda t: sum(math.sqrt(abs(i)) for i in t), self.ang_velocities))
+
+        '''Stay upright'''
+        sideways_amounts = []
+        for roll, pitch, _, _ in self.torso_rotations:
+            sideways_amounts.append(math.sqrt(abs(roll)) + math.sqrt(abs(pitch)))
+        mean_sideways_amount = mean(sideways_amounts)
+        upright_fitness = UPRIGHT_SCALE * min(-mean_sideways_amount, -3 * mean_sideways_amount)
+
+        '''Leg swing consistency'''
+        leg_fitnesses = []
+        for lst in (self.back_left_leg_angles,
+                    self.back_right_leg_angles,
+                    self.front_left_leg_angles,
+                    self.front_right_leg_angles):
+            '''Reward changing angles'''
+            directions = []      # -1 or 1
+            absolute_diffs = []  # abs(difference)
+            for a1, a2 in zip(lst[:-1], lst[1:]):
+                absolute_diffs.append(abs(a2 - a1))
+
+                if a2 - a1 > 0:
+                    directions.append(1)
+                else:
+                    directions.append(-1)
+            leg_movement_fitness = LEG_MOVEMENT_SCALE * mean(absolute_diffs)
+
+            '''Penalize changing direction of motion'''
+            direction_changes = []
+            for dir1, dir2 in zip(directions[:-1], directions[1:]):
+                if dir1 == dir2:
+                    direction_changes.append(0)
+                else:
+                    direction_changes.append(1)
+            leg_consistency_fitness = LEG_CONSISTENCY_SCALE * -mean(direction_changes)
+
+            '''Summarize total fitness for this leg'''
+            leg_fitnesses.append(math.sqrt(leg_movement_fitness) + leg_consistency_fitness)
+        legs_fitness = LEGS_FITNESS_SCALE * mean(leg_fitnesses)
+
+        '''Keep lower legs in contact with the ground'''
+        contact_points = []
+        for sensor_name, sensor in self.sensors.items():
+            if 'Lower' in sensor_name and 'Leg' in sensor_name:
+                contact_points.extend(sensor.values)
+        contact_fitness = CONTACT_SCALE * mean(contact_points)
 
         # ic(cube_height_fitness)
         # ic(grabber_dist_fitness)
@@ -238,15 +238,15 @@ class Robot:
         # 1/0
 
         fitness = cube_height_fitness \
-                  + grabber_dist_fitness #\
-                  # + forward_fitness \
-                  # + forward_vel_fitness \
-                  # + height_fitness \
-                  # + height_consistency_fitness \
-                  # + balancing_fitness \
-                  # + upright_fitness \
-                  # + legs_fitness \
-                  # + contact_fitness
+                  + grabber_dist_fitness \
+                  + forward_fitness \
+                  + forward_vel_fitness \
+                  + height_fitness \
+                  + height_consistency_fitness \
+                  + balancing_fitness \
+                  + upright_fitness \
+                  + legs_fitness \
+                  + contact_fitness
 
         with open(f'tmp{self.id}.txt', 'w') as f:
             f.write(str(fitness))

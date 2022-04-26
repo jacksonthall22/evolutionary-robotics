@@ -1,6 +1,6 @@
 <sdf>
     <model name="Table">
-        <pose>-1.775 0 0.625 0 0 0 </pose>
+        <pose>-10 0 0.625 0 0 0 </pose>
         <link name="Table">
             <inertial>
                 <mass>1.0</mass>
@@ -16,14 +16,14 @@
             <collision>
                 <geometry>
                    <box>
-                      <size>2 1 1.25</size>
+                      <size>1 1 1.25</size>
                    </box>
                 </geometry>
             </collision>
             <visual>
                 <geometry>
                    <box>
-                      <size>2 1 1.25</size>
+                      <size>1 1 1.25</size>
                    </box>
                 </geometry>
             </visual>

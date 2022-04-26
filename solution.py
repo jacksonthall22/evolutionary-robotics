@@ -51,8 +51,8 @@ class Solution:
         self.start_simulation(direct_or_gui)
         self.wait_for_simulation_to_end()
 
-    X_DISTANCE = 1.775
-    TABLE_SIZE = (2, 1, 1.25)
+    X_DISTANCE = 10
+    TABLE_SIZE = (1, 1, 1.25)
     TABLE_SIZE_X, TABLE_SIZE_Y, TABLE_SIZE_Z = TABLE_SIZE
     def create_world(self):
         pyrosim.Start_SDF('world.sdf')
@@ -96,7 +96,7 @@ class Solution:
         HIP_JOINT_FL = add_tup(TORSO_POS, (-TORSO_SIZE_X/2 + LEG_SIZE_X/2,
                                            -TORSO_SIZE_Y/2,
                                            0))
-        HIP_UPPER_LIMIT = radians(15)
+        HIP_UPPER_LIMIT = radians(0)
         HIP_LOWER_LIMIT = -HIP_UPPER_LIMIT
         # HIP_LOWER_LIMIT = HIP_UPPER_LIMIT = 0
         pyrosim.Send_Joint(parent='Torso',
@@ -412,19 +412,19 @@ class Solution:
         sensor_names = [
             'Torso',
 
-            # 'BackRightLeg',
-            # 'BackLeftLeg',
-            # 'FrontRightLeg',
-            # 'FrontLeftLeg',
-            #
-            # 'LowerBackRightLeg',
-            # 'LowerBackLeftLeg',
-            # 'LowerFrontRightLeg',
-            # 'LowerFrontLeftLeg',
+            'BackRightLeg',
+            'BackLeftLeg',
+            'FrontRightLeg',
+            'FrontLeftLeg',
 
-            'Wrist',
-            'Grabber1',
-            'Grabber2',
+            'LowerBackRightLeg',
+            'LowerBackLeftLeg',
+            'LowerFrontRightLeg',
+            'LowerFrontLeftLeg',
+
+            # 'Wrist',
+            # 'Grabber1',
+            # 'Grabber2',
         ]
         for sensor_name in sensor_names:
             send_sensor(sensor_name)
@@ -434,23 +434,23 @@ class Solution:
             # 'Torso_BackLeftHip',
             # 'Torso_FrontRightHip',
             # 'Torso_FrontLeftHip',
-            #
-            # 'BackRightHip_BackRightLeg',
-            # 'BackLeftHip_BackLeftLeg',
-            # 'FrontRightHip_FrontRightLeg',
-            # 'FrontLeftHip_FrontLeftLeg',
-            #
-            # 'BackRightLeg_LowerBackRightLeg',
-            # 'BackLeftLeg_LowerBackLeftLeg',
-            # 'FrontRightLeg_LowerFrontRightLeg',
-            # 'FrontLeftLeg_LowerFrontLeftLeg',
+
+            'BackRightHip_BackRightLeg',
+            'BackLeftHip_BackLeftLeg',
+            'FrontRightHip_FrontRightLeg',
+            'FrontLeftHip_FrontLeftLeg',
+
+            'BackRightLeg_LowerBackRightLeg',
+            'BackLeftLeg_LowerBackLeftLeg',
+            'FrontRightLeg_LowerFrontRightLeg',
+            'FrontLeftLeg_LowerFrontLeftLeg',
 
             'ArmBase_Arm1',
             'Arm1_Arm2',
-            'Arm2_Arm3',
-            'Arm3_Wrist',
-            'Wrist_Grabber1',
-            'Wrist_Grabber2',
+            # 'Arm2_Arm3',
+            # 'Arm3_Wrist',
+            # 'Wrist_Grabber1',
+            # 'Wrist_Grabber2',
         ]
         for motor_name in motor_names:
             send_motor(motor_name)

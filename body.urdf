@@ -26,28 +26,28 @@
        <child  link="BackRightHip"/>
        <origin rpy="0 0 0" xyz="0.675 0.25 1" />
        <axis xyz="1 0 0"/>
-       <limit effort="0.0" lower="-0.2617993877991494" upper="0.2617993877991494" velocity="0.0"/>
+       <limit effort="0.0" lower="-0.0" upper="0.0" velocity="0.0"/>
     </joint>
     <joint name="Torso_BackLeftHip" type="revolute">
        <parent link="Torso"/>
        <child  link="BackLeftHip"/>
        <origin rpy="0 0 0" xyz="0.675 -0.25 1" />
        <axis xyz="1 0 0"/>
-       <limit effort="0.0" lower="-0.2617993877991494" upper="0.2617993877991494" velocity="0.0"/>
+       <limit effort="0.0" lower="-0.0" upper="0.0" velocity="0.0"/>
     </joint>
     <joint name="Torso_FrontRightHip" type="revolute">
        <parent link="Torso"/>
        <child  link="FrontRightHip"/>
        <origin rpy="0 0 0" xyz="-0.675 0.25 1" />
        <axis xyz="1 0 0"/>
-       <limit effort="0.0" lower="-0.2617993877991494" upper="0.2617993877991494" velocity="0.0"/>
+       <limit effort="0.0" lower="-0.0" upper="0.0" velocity="0.0"/>
     </joint>
     <joint name="Torso_FrontLeftHip" type="revolute">
        <parent link="Torso"/>
        <child  link="FrontLeftHip"/>
        <origin rpy="0 0 0" xyz="-0.675 -0.25 1" />
        <axis xyz="1 0 0"/>
-       <limit effort="0.0" lower="-0.2617993877991494" upper="0.2617993877991494" velocity="0.0"/>
+       <limit effort="0.0" lower="-0.0" upper="0.0" velocity="0.0"/>
     </joint>
     <link name="BackRightHip">
         <inertial>
