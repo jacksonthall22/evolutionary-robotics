@@ -64,23 +64,29 @@ class ParallelHillClimber:
 
     def mutate(self, gen):
         for i, (child, _) in self.children.items():
-            '''https://www.desmos.com/calculator/bcasuzmogk'''
+            '''https://www.desmos.com/calculator/jaaindbjhg'''
             m1 = c.START_NUM_MUTATIONS
             m2 = c.END_NUM_MUTATIONS
-            t = gen
-            t_final = c.NUM_GENERATIONS
+            x = gen
+            t = c.NUM_GENERATIONS
 
             # End at 1 (linear)
             # num_mutations = math.ceil(m1 - ((m1 - m2 + 1) * t) / t_final)
 
-            # End at END_NUM_MUTATIONS (linear)
-            # num_mutations = max(1, math.ceil(m1 * (1 - t/t_final)))
-
-            # Decay exponentially
-            # num_mutations = math.floor(t_final / (t + (t_final / (m1 - m2))) + m2)
-
-            # Use constant value
-            num_mutations = c.END_NUM_MUTATIONS
+            if c.MUTATION_TYPE == c.MutationType.CONSTANT:
+                # Use constant value
+                num_mutations = c.END_NUM_MUTATIONS
+            elif c.MUTATION_TYPE == c.MutationType.LINEAR:
+                # Linear (start at START_NUM_MUTATIONS and end at END_NUM_MUTATIONS)
+                num_mutations = max(1, math.ceil(m1 - (m1 - m2 + 1)*math.ceil(x)/t))
+            elif c.MUTATION_TYPE == c.MutationType.DECAY:
+                # Exponential decay (quick falloff)
+                num_mutations = math.floor(t / (math.ceil(x) + (t / (m1 - m2))) + m2)
+            elif c.MUTATION_TYPE == c.MutationType.NEGATIVE_EXPONENTIAL:
+                # Negative exponential (slow falloff)
+                num_mutations = max(1, math.floor(t / (math.ceil(x) - (t / (m1 - m2) + t)) + m1))
+            else:
+                raise ValueError(f'Unknown MUTATION_TYPE: {c.MUTATION_TYPE}')
 
             child.mutate(num_mutations=num_mutations)
 
