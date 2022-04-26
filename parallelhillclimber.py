@@ -33,6 +33,7 @@ class ParallelHillClimber:
                 self.parents[i][0].mutate(num_mutations=c.NUM_MUTATIONS_FROM_SEED)
 
         self.children = None
+        self.fitness_record = np.empty((c.POPULATION_SIZE, c.NUM_GENERATIONS))
 
     def evolve(self):
         self.evaluate(self.parents)
@@ -47,6 +48,7 @@ class ParallelHillClimber:
         self.spawn()
         self.mutate(gen)
         self.evaluate(self.children)
+        self.record_fitnesses(self.children, gen)
         print(self)
         self.select()
 
@@ -130,4 +132,18 @@ class ParallelHillClimber:
                 max(self.parents.values(), key=lambda p: p[0].fitness)[0].weights,
                 allow_pickle=True)
 
-        print(f'Saved {len(self.parents.items())} brain weights to {output_path}.')
+        fitness_record_filepath = f'{output_path}/fitness_record.npy'
+        np.save(fitness_record_filepath,
+                self.fitness_record,
+                allow_pickle=True)
+
+        print(f'Saved {len(self.parents.items())} brain weights and fitness record to {output_path}.')
+
+    def record_fitnesses(self, solutions, gen):
+        assert len(solutions) == c.POPULATION_SIZE
+
+        # Save fitness for every robot for this generation
+        fitnesses = np.empty(c.POPULATION_SIZE)
+        for i, (_, fitness) in solutions.items():
+            fitnesses[i] = fitness
+        self.fitness_record[gen, :] = fitnesses
