@@ -76,7 +76,10 @@ class ParallelHillClimber:
             # num_mutations = max(1, math.ceil(m1 * (1 - t/t_final)))
 
             # Decay exponentially
-            num_mutations = math.floor(t_final / (t + (t_final / (m1 - m2))) + m2)
+            # num_mutations = math.floor(t_final / (t + (t_final / (m1 - m2))) + m2)
+
+            # Use constant value
+            num_mutations = c.END_NUM_MUTATIONS
 
             child.mutate(num_mutations=num_mutations)
 
