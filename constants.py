@@ -2,9 +2,10 @@ import numpy as np
 from enum import Enum, auto
 
 class MutationType(Enum):
-    GROWTH = auto()
-    DECAY = auto()
+    CONSTANT = auto()
     LINEAR = auto()
+    DECAY = auto()
+    NEGATIVE_EXPONENTIAL = auto()
 
 
 ''' Simulation constants '''
@@ -15,14 +16,14 @@ POPULATION_SIZE = 100
 MAX_CONCURRENT_SIMS = 10
 
 ''' Mutation constants '''
-MUTATION_TYPE = MutationType.LINEAR
+START_NUM_MUTATIONS = 50
+END_NUM_MUTATIONS = 3
+MUTATION_TYPE = MutationType.CONSTANT
+NUM_MUTATIONS_FROM_SEED = 4
 
 ''' Robot constants '''
-NUM_SENSOR_NEURONS = 4
-NUM_MOTOR_NEURONS = 6
-START_NUM_MUTATIONS = 4
-END_NUM_MUTATIONS = 1
-NUM_MUTATIONS_FROM_SEED = 4
+NUM_SENSOR_NEURONS = 9
+NUM_MOTOR_NEURONS = 10
 MAX_JOINT_FORCE = 35
 JOINT_MOTOR_RANGE = 1
 
