@@ -1,4 +1,11 @@
 import numpy as np
+from enum import Enum, auto
+
+class MutationType(Enum):
+    GROWTH = auto()
+    DECAY = auto()
+    LINEAR = auto()
+
 
 ''' Simulation constants '''
 TIME_STEPS = 2000
@@ -6,6 +13,9 @@ TICKS_PER_SEC = 1000
 NUM_GENERATIONS = 25
 POPULATION_SIZE = 100
 MAX_CONCURRENT_SIMS = 10
+
+''' Mutation constants '''
+MUTATION_TYPE = MutationType.LINEAR
 
 ''' Robot constants '''
 NUM_SENSOR_NEURONS = 4
