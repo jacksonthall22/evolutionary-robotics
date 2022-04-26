@@ -150,4 +150,4 @@ class ParallelHillClimber:
         fitnesses = np.empty(c.POPULATION_SIZE)
         for i, (_, fitness) in solutions.items():
             fitnesses[i] = fitness
-        self.fitness_record[gen, :] = fitnesses
+        self.fitness_record[:, gen] = fitnesses
