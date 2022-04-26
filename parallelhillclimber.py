@@ -1,3 +1,4 @@
+import shutil
 from solution import Solution
 from constants import NUM_GENERATIONS, POPULATION_SIZE
 import copy
@@ -118,23 +119,7 @@ class ParallelHillClimber:
         if not os.path.exists(output_path):
             os.makedirs(output_path, exist_ok=True)
 
-        with open(f'{output_path}/fitness_constants.txt', 'w') as f:
-            f.write(f'TIME_STEPS = {c.TIME_STEPS}\n')
-            f.write(f'TICKS_PER_SEC = {c.TICKS_PER_SEC}\n')
-            f.write(f'NUM_GENERATIONS = {c.NUM_GENERATIONS}\n')
-            f.write(f'POPULATION_SIZE = {c.POPULATION_SIZE}\n')
-            f.write('\n')
-            f.write(f'CUBE_HEIGHT_SCALE = {c.CUBE_HEIGHT_SCALE}\n')
-            f.write(f'FORWARD_POS_SCALE = {c.FORWARD_POS_SCALE}\n')
-            f.write(f'FORWARD_VEL_SCALE = {c.FORWARD_VEL_SCALE}\n')
-            f.write(f'HEIGHT_SCALE = {c.HEIGHT_SCALE}\n')
-            f.write(f'HEIGHT_CONSISTENCY_SCALE = {c.HEIGHT_CONSISTENCY_SCALE}\n')
-            f.write(f'BALANCING_SCALE = {c.BALANCING_SCALE}\n')
-            f.write(f'UPRIGHT_SCALE = {c.UPRIGHT_SCALE}\n')
-            f.write(f'LEG_MOVEMENT_SCALE = {c.LEG_MOVEMENT_SCALE}\n')
-            f.write(f'LEG_CONSISTENCY_SCALE = {c.LEG_CONSISTENCY_SCALE}\n')
-            f.write(f'LEGS_FITNESS_SCALE = {c.LEGS_FITNESS_SCALE}\n')
-            f.write(f'CONTACT_SCALE = {c.CONTACT_SCALE}\n')
+        shutil.copyfile('constants.py', f'{output_path}/constants.py')
 
         for i, (parent, fitness) in enumerate(self.parents.values()):
             weights_filepath = f'{output_path}/weights_{i}___f={parent.fitness:.6f}.npy'
