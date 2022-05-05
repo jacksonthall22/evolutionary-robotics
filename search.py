@@ -4,6 +4,7 @@ import solution
 import numpy as np
 import os
 import pathlib
+import time
 
 DO_SEARCH = 1
 USE_SEED_WEIGHTS = 0
@@ -17,9 +18,22 @@ BEST_WEIGHTS_PATH = os.path.join(POPULATION_PATH, 'best_weights.npy')
 SEED_WEIGHTS = np.load(BEST_WEIGHTS_PATH, allow_pickle=True)
 
 if DO_SEARCH:
+    start_time = time.time()
+
     phc = ParallelHillClimber(seed_weights=SEED_WEIGHTS if USE_SEED_WEIGHTS else None)
     phc.evolve()
+
+    elapsed = time.time() - start_time
+    if elapsed < 60:
+        time_str = f'{elapsed:.2f}s'
+    elif elapsed < 3600:
+        time_str = f'{elapsed / 60:.2f}m'
+    else:
+        time_str = f'{elapsed / 3600:.2f}hr'
+    print(f'Evolution finished in {time_str}.')
+
     phc.save_population()
+
     input('Press enter to show the best solution!\n>>> ')
     phc.show_best()
 else:
