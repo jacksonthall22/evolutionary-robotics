@@ -12,8 +12,8 @@ SDF_FILETYPE  = 0
 URDF_FILETYPE = 1
 NNDF_FILETYPE   = 2
 
-# global availableLinkIndex
-# global linkNamesToIndices
+global availableLinkIndex
+global linkNamesToIndices
 
 def End():
     if filetype == SDF_FILETYPE:
@@ -54,7 +54,7 @@ def Prepare_Link_Dictionary(bodyID):
 
         if jointIndex == 0:
            rootLinkName = jointName[0]
-           linkNamesToIndices[rootLinkName] = -1 
+           linkNamesToIndices[rootLinkName] = -1
 
 def Prepare_Joint_Dictionary(bodyID):
     global jointNamesToIndices
@@ -111,13 +111,26 @@ def Send_Joint(parent,
     joint.Save(f)
 
 def Send_Motor_Neuron(name, jointName):
-    f.write('    <neuron name = "' + str(name) + '" type = "motor"  jointName = "' + jointName + '" />\n')
+    f.write(f'    <neuron name = "{name}" type = "motor"  jointName = "{jointName}" />\n')
 
 def Send_Sensor_Neuron(name, linkName):
-    f.write('    <neuron name = "' + str(name) + '" type = "sensor" linkName = "' + linkName + '" />\n')
+    f.write(f'    <neuron name = "{name}" type = "sensor" linkName = "{linkName}" />\n')
+
+def Send_Torque_Sensor_Neurons(name, jointName, robotId, jointIndex):
+    for name_num in (f'{name}-{i}' for i in range(6)):
+        f.write(f'    <neuron name = "{name_num}" type = "torqueSensor" jointName = "{jointName}" '
+                f'robotId = "{robotId}" jointIndex = "{jointIndex}" />\n')
+
+def Send_CPG_Neuron(name, amplitude, period, offset, timeSteps):
+    f.write(f'    <neuron name = "{name}" '
+            f'type = "cpg" '
+            f'amplitude = "{amplitude}" '
+            f'period = "{period}" '
+            f'offset = "{offset}" '
+            f'timeSteps = "{timeSteps}" />\n')
 
 def Send_Synapse(sourceNeuronName, targetNeuronName, weight):
-    f.write('    <synapse sourceNeuronName = "' + str(sourceNeuronName) + '" targetNeuronName = "' + str(targetNeuronName) + '" weight = "' + str(weight) + '" />\n')
+    f.write(f'    <synapse sourceNeuronName = "{sourceNeuronName}" targetNeuronName = "{targetNeuronName}" weight = "{weight}" />\n')
 
 
 def Set_Motor_For_Joint(bodyIndex, jointName, controlMode, targetPosition, maxForce):

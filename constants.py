@@ -1,5 +1,5 @@
-import numpy as np
 from enum import Enum, auto
+from CPG import CPG
 
 class MutationType(Enum):
     CONSTANT = auto()
@@ -24,6 +24,15 @@ NUM_MUTATIONS_FROM_SEED = 4
 ''' Robot constants '''
 MAX_JOINT_FORCE = 35
 JOINT_MOTOR_RANGE = 1
+CPGS = [
+    # CPG(time_steps=TIME_STEPS, period=16),
+    # CPG(time_steps=TIME_STEPS, period=32),
+    CPG(time_steps=TIME_STEPS, period=64),
+    CPG(time_steps=TIME_STEPS, period=128),
+    CPG(time_steps=TIME_STEPS, period=256),
+    # CPG(time_steps=TIME_STEPS, period=512),
+    # CPG(time_steps=TIME_STEPS, period=1024),
+]
 
 ''' Fitness constants '''
 CUBE_HEIGHT_SCALE = 0

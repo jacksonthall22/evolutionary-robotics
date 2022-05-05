@@ -6,8 +6,10 @@ import pyrosim.constants as c
 
 class SYNAPSE:
 
-    def __init__(self,line):
-
+    def __init__(self, line):
+        self.sourceNeuronName = None
+        self.targetNeuronName = None
+        self.weight = None
         self.Determine_Source_Neuron_Name(line)
         self.Determine_Target_Neuron_Name(line)
         self.Determine_Weight(line)

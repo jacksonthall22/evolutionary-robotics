@@ -395,8 +395,15 @@ class Solution:
         pyrosim.Start_NeuralNetwork(filename)
 
         num_sensors = [0]
-        def send_sensor(link_name):
+        def send_touch_sensor(link_name):
             pyrosim.Send_Sensor_Neuron(name=num_sensors[0], linkName=link_name)
+            num_sensors[0] += 1
+        def send_cpg_sensor(cpg):
+            pyrosim.Send_CPG_Neuron(name=num_sensors[0],
+                                    amplitude=cpg.amplitude,
+                                    period=cpg.period,
+                                    offset=cpg.offset,
+                                    timeSteps=c.TIME_STEPS)
             num_sensors[0] += 1
 
         num_motors = [0]
@@ -423,7 +430,11 @@ class Solution:
         ]
         # Add touch sensors
         for sensor_name in sensor_names:
-            send_sensor(sensor_name)
+            send_touch_sensor(sensor_name)
+
+        # Add cpg sensors
+        for cpg in c.CPGS:
+            send_cpg_sensor(cpg)
 
         motor_names = [
             # 'Torso_BackRightHip',

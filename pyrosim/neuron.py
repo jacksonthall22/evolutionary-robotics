@@ -1,32 +1,37 @@
 import math
 import pybullet
+import CPG
 import pyrosim.pyrosim as pyrosim
 import pyrosim.constants as c
 
 
 class NEURON:
 
-    def __init__(self, line):
+    def __init__(self, line, robot_id=None, joint_index=None):
         self.Determine_Name(line)
         self.Determine_Type(line)
         self.Search_For_Link_Name(line)
         self.Search_For_Joint_Name(line)
-        self.Set_Value(0.0)
 
-    def Add_To_Value(self, value):
-        self.Set_Value(self.Get_Value() + value)
+        self.cpg = None
+        self.Search_For_CPG_Params(line)
 
-    def Get_Joint_Name(self):
-        return self.jointName
+        self.value = 0.0
 
-    def Get_Link_Name(self):
-        return self.linkName
+        self.robot_id = robot_id
+        self.joint_index = joint_index
 
-    def Get_Name(self):
-        return self.name
-
-    def Get_Value(self):
-        return self.value
+        # Added by JTH - keep track of {name: (dim0, dim1, dim2, ... dim6)}
+        # to avoid duplicate calls to pys.getJointState for every
+        # sensor neuron (name-dim0, name-dim1, name-dim2, etc.)
+        # self.jointStates = {}
+        # self.dim =
+        #
+        # self.name = None
+        # self.value = None
+        # self.type = None
+        # self.jointName = None
+        # self.linkName = None
 
     def Is_Sensor_Neuron(self):
         return self.type == c.SENSOR_NEURON
@@ -37,30 +42,30 @@ class NEURON:
     def Is_Motor_Neuron(self):
         return self.type == c.MOTOR_NEURON
 
-    def Print(self):
-        # self.Print_Name()
-        # self.Print_Type()
-        self.Print_Value()
-        # print("")
-
-    def Set_Value(self, value):
-        self.value = value
+    def Is_CPG_Neuron(self):
+        return self.type == c.CPG_NEURON
 
     def Update_Sensor_Neuron(self):
-        self.Set_Value(pyrosim.Get_Touch_Sensor_Value_For_Link(self.Get_Link_Name()))
+        if not self.Is_Sensor_Neuron():
+            raise ValueError(f'Unsupported neuron type "{self.type}"')
+
+        self.value = pyrosim.Get_Touch_Sensor_Value_For_Link(self.linkName)
+
+    def Update_CPG_Neuron(self, t):
+        if not self.Is_CPG_Neuron():
+            raise ValueError(f'Unsupported neuron type "{self.type}"')
+
+        self.value = self.cpg.values[t]
 
     def Update_Hidden_Or_Motor_Neuron(self, neurons, synapses):
-        self_name = self.Get_Name()
+        if not (self.Is_Motor_Neuron() or self.Is_Hidden_Neuron()):
+            raise ValueError(f'Unsupported neuron type "{self.type}"')
 
         for (pre, post), synapse in synapses.items():
-            if post == self_name:
+            if post == self.name:
                 synapse_weight = synapse.Get_Weight()
-                neuron_value = neurons[pre].Get_Value()
-                self.Allow_Presynaptic_Neuron_To_Influence_Me(synapse_weight, neuron_value)
-        self.Threshold()
-
-    def Allow_Presynaptic_Neuron_To_Influence_Me(self, presynaptic_weight, presynaptic_activation):
-        self.Add_To_Value(presynaptic_weight * presynaptic_activation)
+                self.value += synapse_weight * neurons[pre].value
+        self.Activation()
 
 # -------------------------- Private methods -------------------------
 
@@ -74,17 +79,10 @@ class NEURON:
             self.type = c.SENSOR_NEURON
         elif "motor" in line:
             self.type = c.MOTOR_NEURON
+        elif "cpg" in line:
+            self.type = c.CPG_NEURON
         else:
             self.type = c.HIDDEN_NEURON
-
-    def Print_Name(self):
-       print(self.name)
-
-    def Print_Type(self):
-       print(self.type)
-
-    def Print_Value(self):
-       print(self.value, end="  ")
 
     def Search_For_Joint_Name(self, line):
         if "jointName" in line:
@@ -96,5 +94,16 @@ class NEURON:
             splitLine = line.split('"')
             self.linkName = splitLine[5]
 
-    def Threshold(self):
+    def Search_For_CPG_Params(self, line):
+        if '"cpg"' in line:
+            s = line.split()
+            f = lambda s: s.strip('"').strip("'")
+            a = float(f(s[9]))
+            p = float(f(s[12]))
+            o = float(f(s[15]))
+            t = int(f(s[18]))
+            name = f(s[3])
+            self.cpg = CPG.CPG(name=name, amplitude=a, period=p, offset=o, time_steps=t)
+
+    def Activation(self):
         self.value = math.tanh(self.value)

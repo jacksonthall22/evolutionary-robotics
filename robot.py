@@ -55,15 +55,24 @@ class Robot:
     def prepare_to_sense(self):
         self.sensors = {}
         for link_name in ps.linkNamesToIndices:
-            self.sensors[link_name] = Sensor(link_name)
+            self.sensors[link_name] = Sensor(name=link_name, time_steps=c.TIME_STEPS)
+
+        for cpg in c.CPGS:
+            self.sensors[cpg.name] = cpg
 
     def sense(self, t):
         for sensor in self.sensors.values():
-            sensor.get_value(t)
+            sensor.set_value(t)
+
+        # if t == 1000:
+        #     for i in range(pyb.getNumJoints(self.robot_id)):
+        #         jointState = pyb.getJointState(self.robot_id, i)
+        #         ic(jointState)
+        #     1 / 0
 
     def think(self, t):
         # pass
-        self.nn.Update()
+        self.nn.Update(t)
 
     def prepare_to_act(self):
         self.motors = {}
@@ -145,6 +154,7 @@ class Robot:
         cube_height_fitness = mean(scaled_cube_z_coords)
         # Do not exponentially scale reward
         # cube_height_fitness = mean(cube_z_coords)
+
         cube_height_fitness *= CUBE_HEIGHT_SCALE
 
         '''Minimize distance between grabbers and cube'''
