@@ -424,9 +424,12 @@ class Solution:
             'LowerFrontRightLeg',
             'LowerFrontLeftLeg',
 
+            'Arm1',
+            'Arm2',
+            # 'Arm3',
             # 'Wrist',
-            # 'Grabber1',
-            # 'Grabber2',
+            'Grabber1',
+            'Grabber2',
         ]
         # Add touch sensors
         for sensor_name in sensor_names:
@@ -456,8 +459,8 @@ class Solution:
             'Arm1_Arm2',
             # 'Arm2_Arm3',
             # 'Arm3_Wrist',
-            # 'Wrist_Grabber1',
-            # 'Wrist_Grabber2',
+            'Wrist_Grabber1',
+            'Wrist_Grabber2',
         ]
         # Add motors
         for motor_name in motor_names:
