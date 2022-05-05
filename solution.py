@@ -14,12 +14,7 @@ from utils import delete_files, add_tup
 class Solution:
     def __init__(self, id: int, preset_weights: np.ndarray = None):
         self.id = id
-
-        if preset_weights is None:
-            self.weights = np.random.rand(c.NUM_SENSOR_NEURONS, c.NUM_MOTOR_NEURONS) * 2 - 1
-        else:
-            self.weights = preset_weights
-
+        self.weights = preset_weights
         self.fitness = None
 
     def set_id(self, id):
@@ -426,6 +421,7 @@ class Solution:
             # 'Grabber1',
             # 'Grabber2',
         ]
+        # Add touch sensors
         for sensor_name in sensor_names:
             send_sensor(sensor_name)
 
@@ -452,9 +448,19 @@ class Solution:
             # 'Wrist_Grabber1',
             # 'Wrist_Grabber2',
         ]
+        # Add motors
         for motor_name in motor_names:
             send_motor(motor_name)
 
+        # Set weights dynamically so we know how many sensors/motors there are
+        if self.weights is not None:
+            # Preset weights were provided
+            assert self.weights.shape == (num_sensors[0], num_motors[0]), \
+                    f'{self.weights.shape} != ({num_sensors[0]}, {num_motors[0]})'
+        else:
+            self.weights: np.ndarray = np.random.rand(num_sensors[0], num_motors[0]) * 2 - 1
+
+        # Add synapses
         for row in range(num_sensors[0]):
             for col in range(num_motors[0]):
                 pyrosim.Send_Synapse(sourceNeuronName=row,
