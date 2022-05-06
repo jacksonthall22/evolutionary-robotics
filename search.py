@@ -10,17 +10,20 @@ DO_SEARCH = 1
 USE_SEED_WEIGHTS = 0
 USE_MOST_RECENT = 0
 
-if USE_MOST_RECENT:
-    POPULATION_PATH = max(pathlib.Path('best_brains').glob('*/'), key=os.path.getmtime)
+if USE_SEED_WEIGHTS:
+    if USE_MOST_RECENT:
+        POPULATION_PATH = max(pathlib.Path('best_brains').glob('*/'), key=os.path.getmtime)
+    else:
+        POPULATION_PATH = 'best_brains/2022-04-25_10-20-44_PM'
+    BEST_WEIGHTS_PATH = os.path.join(POPULATION_PATH, 'best_weights.npy')
+    SEED_WEIGHTS = np.load(BEST_WEIGHTS_PATH, allow_pickle=True)
 else:
-    POPULATION_PATH = 'best_brains/2022-04-25_10-20-44_PM'
-BEST_WEIGHTS_PATH = os.path.join(POPULATION_PATH, 'best_weights.npy')
-SEED_WEIGHTS = np.load(BEST_WEIGHTS_PATH, allow_pickle=True)
+    SEED_WEIGHTS = None
 
 if DO_SEARCH:
     start_time = time.time()
 
-    phc = ParallelHillClimber(seed_weights=SEED_WEIGHTS if USE_SEED_WEIGHTS else None)
+    phc = ParallelHillClimber(seed_weights=SEED_WEIGHTS)
     phc.evolve()
 
     elapsed = time.time() - start_time
