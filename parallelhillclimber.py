@@ -122,7 +122,6 @@ class ParallelHillClimber:
     def show_best(self):
         best_parent = max((p[0] for p in self.parents.values()), key=lambda p: p.fitness)
         best_parent.start_simulation('GUI')
-        best_parent.wait_for_simulation_to_end()
 
     def save_population(self):
         now = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")

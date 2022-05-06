@@ -40,6 +40,5 @@ else:
     print(f'Showing best robot from population "{POPULATION_PATH}"...')
     s = solution.Solution(0, preset_weights=SEED_WEIGHTS)
     s.start_simulation(direct_or_gui='GUI')
-    s.wait_for_simulation_to_end()
 
 print('done!')
