@@ -7,11 +7,13 @@ import math
 import random
 import numpy as np
 import os
+import sys
 import time
 import constants as c
 import operator as op
 from math import radians
 from utils import delete_files, add_tup
+import subprocess
 
 
 class Solution:
@@ -27,7 +29,9 @@ class Solution:
         self.create_world()
         self.create_body()
         self.create_brain()
-        os.system(f'start /B python simulate.py {direct_or_gui} {self.id}')
+        subprocess.Popen(['nohup', sys.executable, 'simulate.py', direct_or_gui, str(self.id)],
+                         stdout=subprocess.DEVNULL,
+                         stderr=subprocess.STDOUT)
 
     def wait_for_simulation_to_end(self):
         fitness_filename = f'fitness{self.id}.txt'
