@@ -1,4 +1,7 @@
-from typing import Literal
+try:
+    from typing import Literal
+except ImportError:
+    from utils import Literal
 import pyrosim.pyrosim as pyrosim
 import math
 import random

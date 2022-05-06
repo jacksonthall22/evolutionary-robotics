@@ -5,6 +5,8 @@ import operator as op
 from statistics import mean
 from contextlib import contextmanager
 import sys
+import numpy as np
+
 
 T = TypeVar('T')
 # https://www.geeksforgeeks.org/break-list-chunks-size-n-python/
@@ -50,6 +52,19 @@ def mult_tup(t1: tuple, t2: tuple) -> tuple:
 def mean_tup(*ts: tuple) -> tuple:
     """ Perform an elementwise mean. """
     return tuple(map(mean, zip(*ts)))
+
+def dist(v1, v2):
+    """ Reimplement math.dist for Python 3.6 """
+    assert len(v1) == len(v2)
+    v1 = np.array(v1)
+    v2 = np.array(v2)
+    return np.linalg.norm(v1 - v2)
+
+class LiteralType:
+    """ Reimplement typing.Literal for Python 3.6 """
+    def __getitem__(self, key):
+        return str
+Literal = LiteralType()
 
 
 ''' Doesn't work \/ '''

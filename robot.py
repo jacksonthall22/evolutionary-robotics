@@ -21,6 +21,10 @@ from constants import CUBE_HEIGHT_SCALE, \
                       LEGS_FITNESS_SCALE, \
                       CONTACT_SCALE
 from utils import delete_files, mean_tup  # , HideOutput
+try:
+    from math import dist
+except ImportError:
+    from utils import dist
 
 
 class Robot:
@@ -158,7 +162,7 @@ class Robot:
         cube_height_fitness *= CUBE_HEIGHT_SCALE
 
         '''Minimize distance between grabbers and cube'''
-        grabber_dists = tuple(math.dist(g, c) for g, c in zip(self.grabber_coords, self.cube_coords))
+        grabber_dists = tuple(dist(g, c) for g, c in zip(self.grabber_coords, self.cube_coords))
         # https://www.desmos.com/calculator/bcasuzmogk
         r_0 = 5                         # Reward scale at t=0
         r_f = 0                         # Reward scale at t=final
