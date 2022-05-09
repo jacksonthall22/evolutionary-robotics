@@ -24,7 +24,7 @@ class ParallelHillClimber:
         self.nextAvailableID = 0
 
         self.parents = {}
-        for i in range(POPULATION_SIZE):
+        for i in range(c.POPULATION_SIZE):
             if seed_weights is None:
                 solution = Solution(self.nextAvailableID, preset_weights=None)
             else:
@@ -40,8 +40,8 @@ class ParallelHillClimber:
     def evolve(self):
         self.evaluate(self.parents)
 
-        for gen in range(NUM_GENERATIONS):
-            s = f'\nGENERATION {gen + 1}/{NUM_GENERATIONS}'
+        for gen in range(c.NUM_GENERATIONS):
+            s = f'\nGENERATION {gen + 1}/{c.NUM_GENERATIONS}'
             print(s)
             print('=' * len(s.strip()))
             self.evolve_for_one_generation(gen)
