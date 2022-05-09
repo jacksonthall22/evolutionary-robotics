@@ -1,14 +1,15 @@
-import shutil
 from solution import Solution
-from constants import NUM_GENERATIONS, POPULATION_SIZE
-import copy
-import os
-from datetime import datetime
-import constants as c
 from utils import chunkify, pluralize, delete_files
+from mutation_type import MutationType
+import constants as c
+
+import os
+import shutil
+import copy
+from datetime import datetime
 import numpy as np
 import math
-from icecream import ic
+
 
 BEST_BRAINS_PATH = 'best_brains'
 BEST_BRAIN_FILENAME = 'best_brain.nndf'

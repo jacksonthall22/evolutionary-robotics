@@ -1,10 +1,14 @@
 from parallelhillclimber import ParallelHillClimber
-import simulation
 import solution
-import numpy as np
+import constants as c
+
 import os
+import sys
+import numpy as np
 import pathlib
 import time
+from mutation_type import MutationType
+
 
 DO_SEARCH = 1
 USE_SEED_WEIGHTS = 0

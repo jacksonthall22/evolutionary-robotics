@@ -1,11 +1,5 @@
-from enum import Enum, auto
 from CPG import CPG
-
-class MutationType(Enum):
-    CONSTANT = auto()
-    LINEAR = auto()
-    DECAY = auto()
-    NEGATIVE_EXPONENTIAL = auto()
+from mutation_type import MutationType
 
 
 ''' Simulation constants '''

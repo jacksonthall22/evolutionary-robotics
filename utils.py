@@ -1,11 +1,9 @@
 from typing import Iterable, Tuple, TypeVar, List
-import glob
 import os
+import glob
+import numpy as np
 import operator as op
 from statistics import mean
-from contextlib import contextmanager
-import sys
-import numpy as np
 
 
 T = TypeVar('T')
