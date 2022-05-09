@@ -10,7 +10,7 @@ class CPG(Sensor):
     def __init__(self,
                  time_steps: int,
                  name: str = None,
-                 amplitude: float = 1,
+                 amplitude: float = 50,
                  period: float = pi,
                  offset: float = None):
         if name is None:
