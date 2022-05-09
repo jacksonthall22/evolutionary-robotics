@@ -13,7 +13,11 @@ from mutation_type import MutationType
 DO_SEARCH = 1
 USE_SEED_WEIGHTS = 0
 USE_MOST_RECENT = 0
+SHOW_BEST = 1
+WAIT_BEFORE_SHOW_BEST = 1
 
+
+# Get seed weights
 if USE_SEED_WEIGHTS:
     if USE_MOST_RECENT:
         POPULATION_PATH = max(pathlib.Path('best_brains').glob('*/'), key=os.path.getmtime)
@@ -41,8 +45,12 @@ if DO_SEARCH:
 
     phc.save_population()
 
-    input('Press enter to show the best solution!\n>>> ')
-    phc.show_best()
+    if SHOW_BEST:
+        if WAIT_BEFORE_SHOW_BEST:
+            input('Press enter to show the best solution!\n>>> ')
+
+        print('Showing best...')
+        phc.show_best()
 else:
     print(f'Showing best robot from population "{POPULATION_PATH}"...')
     s = solution.Solution(0, preset_weights=SEED_WEIGHTS)
