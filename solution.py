@@ -35,20 +35,18 @@ class Solution:
                          stderr=subprocess.STDOUT)
 
     def wait_for_simulation_to_end(self):
-        fitness_filename = f'fitness{self.id}.txt'
-
-        while not os.path.exists(fitness_filename):
+        while not os.path.exists(self.fitness_filename):
             time.sleep(0.1)
         for i in range(1000):
             try:
-                with open(fitness_filename, 'r') as f:
+                with open(self.fitness_filename, 'r') as f:
                     self.fitness = float(f.read())
                 break
             except PermissionError:
                 if i == 999:
                     print('test: PermissionError')
 
-        delete_files(file=f'fitness{self.id}.txt')
+        delete_files(file=self.fitness_filename)
 
     def evaluate(self, direct_or_gui):
         self.start_simulation(direct_or_gui)
