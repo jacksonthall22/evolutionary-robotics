@@ -55,6 +55,9 @@ class Robot:
         self.front_left_leg_angles = []
         self.front_right_leg_angles = []
 
+        self.fitness_temp_file = f'{temp_prefix}tmp{self.id}.txt'
+        self.fitness_file = f'{temp_prefix}fitness{self.id}.txt'
+
     def prepare_to_sense(self):
         self.sensors = {}
         for link_name in ps.linkNamesToIndices:
@@ -261,6 +264,6 @@ class Robot:
                   + legs_fitness \
                   + contact_fitness
 
-        with open(f'tmp{self.id}.txt', 'w') as f:
+        with open(self.fitness_temp_file, 'w') as f:
             f.write(str(fitness))
-        os.rename(f'tmp{self.id}.txt', f'fitness{self.id}.txt')
+        os.rename(self.fitness_temp_file, self.fitness_file)
