@@ -16,10 +16,10 @@ BEST_BRAIN_FILENAME = 'best_brain.nndf'
 
 
 class ParallelHillClimber:
-    def __init__(self, seed_weights=None):
-        delete_files(file_pattern='brain*.nndf')
-        delete_files(file_pattern='fitness*.txt')
-        delete_files(file_pattern='tmp*.txt')
+    def __init__(self, *, seed_weights=None, mutation_type=c.MUTATION_TYPE):
+        self.temp_prefix = f'{mutation_type.value}.'
+
+        ParallelHillClimber.delete_brain_fitness_tmp_files(temp_prefix=self.temp_prefix)
 
         self.nextAvailableID = 0
 
@@ -34,6 +34,7 @@ class ParallelHillClimber:
 
         self.children = None
         self.fitness_record = np.empty((c.POPULATION_SIZE, c.NUM_GENERATIONS))
+        self.mutation_type = mutation_type
 
     def evolve(self):
         self.evaluate(self.parents)
@@ -72,16 +73,16 @@ class ParallelHillClimber:
             # End at 1 (linear)
             # num_mutations = math.ceil(m1 - ((m1 - m2 + 1) * t) / t_final)
 
-            if c.MUTATION_TYPE == c.MutationType.CONSTANT:
+            if self.mutation_type == MutationType.CONSTANT:
                 # Use constant value
                 num_mutations = c.END_NUM_MUTATIONS
-            elif c.MUTATION_TYPE == c.MutationType.LINEAR:
+            elif self.mutation_type == MutationType.LINEAR:
                 # Linear (start at START_NUM_MUTATIONS and end at END_NUM_MUTATIONS)
                 num_mutations = max(1, math.ceil(m1 - (m1 - m2 + 1)*math.ceil(x)/t))
-            elif c.MUTATION_TYPE == c.MutationType.DECAY:
+            elif self.mutation_type == MutationType.DECAY:
                 # Exponential decay (quick falloff)
                 num_mutations = math.floor(t / (math.ceil(x) + (t / (m1 - m2))) + m2)
-            elif c.MUTATION_TYPE == c.MutationType.NEGATIVE_EXPONENTIAL:
+            elif self.mutation_type == MutationType.NEGATIVE_EXPONENTIAL:
                 # Negative exponential (slow falloff)
                 num_mutations = max(1, math.floor(t / (math.ceil(x) - (t / (m1 - m2) + t)) + m1))
             else:
@@ -122,20 +123,24 @@ class ParallelHillClimber:
         best_parent = max((p[0] for p in self.parents.values()), key=lambda p: p.fitness)
         best_parent.start_simulation('GUI')
 
-    def save_population(self, subdir=None):
-        if subdir is None:
+    def save_population(self, test: MutationType = None):
+        if not os.path.exists(BEST_BRAINS_PATH):
+            os.makedirs(BEST_BRAINS_PATH)
+        if test is None:
             now = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
 
+            # Prevent duplicates to keep track of parallel run errors
             output_path = f'{BEST_BRAINS_PATH}/{now}'
-            if not os.path.exists(output_path):
-                os.makedirs(output_path, exist_ok=True)
+            os.makedirs(output_path, exist_ok=False)
         else:
+            subdir = f'Test_{test.name}'
             output_path = f'{BEST_BRAINS_PATH}/{subdir}'
-            if os.path.exists(output_path):
-                for file in os.scandir(output_path):
-                    os.remove(file.path)
-            else:
-                os.makedirs(output_path, exist_ok=True)
+
+            # Make sure dir exists
+            os.makedirs(output_path, exist_ok=True)
+            # Clear it immediately
+            for file in os.scandir(output_path):
+                os.remove(file.path)
 
         shutil.copyfile('constants.py', f'{output_path}/constants.py')
 
@@ -163,3 +168,9 @@ class ParallelHillClimber:
         for i, (_, fitness) in solutions.items():
             fitnesses[i] = fitness
         self.fitness_record[:, gen] = fitnesses
+
+    @staticmethod
+    def delete_brain_fitness_tmp_files(temp_prefix: str):
+        delete_files(file_pattern=f'{temp_prefix}brain*.nndf')
+        delete_files(file_pattern=f'{temp_prefix}fitness*.txt')
+        delete_files(file_pattern=f'{temp_prefix}tmp*.txt')

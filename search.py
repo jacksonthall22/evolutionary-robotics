@@ -28,10 +28,30 @@ if USE_SEED_WEIGHTS:
 else:
     SEED_WEIGHTS = None
 
+# Get mutation type from system call
+if len(sys.argv) == 1:
+    mutation_type = c.MUTATION_TYPE
+    test = None
+else:
+    # Use argv[1] as the A/B/C/D test
+    test = sys.argv[1].upper()
+
+    if test == 'A':
+        mutation_type = MutationType.CONSTANT
+    elif test == 'B':
+        mutation_type = MutationType.LINEAR
+    elif test == 'C':
+        mutation_type = MutationType.DECAY
+    elif test == 'D':
+        mutation_type = MutationType.NEGATIVE_EXPONENTIAL
+    else:
+        raise ValueError(f'Invalid command line argument (should be A/B/C/D): "{sys.argv[1]}"')
+
+# Do search or skip search
 if DO_SEARCH:
     start_time = time.time()
 
-    phc = ParallelHillClimber(seed_weights=SEED_WEIGHTS)
+    phc = ParallelHillClimber(seed_weights=SEED_WEIGHTS, mutation_type=mutation_type)
     phc.evolve()
 
     elapsed = time.time() - start_time
@@ -43,7 +63,7 @@ if DO_SEARCH:
         time_str = f'{elapsed / 3600:.2f}hr'
     print(f'Evolution finished in {time_str}.')
 
-    phc.save_population()
+    phc.save_population(test=test)
 
     if SHOW_BEST:
         if WAIT_BEFORE_SHOW_BEST:
@@ -56,4 +76,4 @@ else:
     s = solution.Solution(0, preset_weights=SEED_WEIGHTS)
     s.start_simulation(direct_or_gui='GUI')
 
-print('done!')
+print(f'Done{" with test "+test if test else ""}!')

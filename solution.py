@@ -18,19 +18,19 @@ import subprocess
 
 
 class Solution:
-    def __init__(self, id: int, preset_weights: np.ndarray = None):
+    def __init__(self, id: int, preset_weights: np.ndarray = None, temp_prefix: str = 'none.'):
         self.id = id
         self.weights = preset_weights.copy() if preset_weights is not None else None
         self.fitness = None
-
-    def set_id(self, id):
-        self.id = id
+        self.temp_prefix = temp_prefix
+        self.fitness_filename = f'{temp_prefix}fitness{self.id}.txt'
+        self.brain_filename = f'{temp_prefix}brain{self.id}.nndf'
 
     def start_simulation(self, direct_or_gui: Literal['DIRECT', 'GUI']):
         self.create_world()
         self.create_body()
         self.create_brain()
-        subprocess.Popen(['nohup', sys.executable, 'simulate.py', direct_or_gui, str(self.id)],
+        subprocess.Popen(['nohup', sys.executable, 'simulate.py', direct_or_gui, str(self.id), self.temp_prefix],
                          stdout=subprocess.DEVNULL,
                          stderr=subprocess.STDOUT)
 

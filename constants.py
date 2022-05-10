@@ -3,10 +3,10 @@ from mutation_type import MutationType
 
 
 ''' Simulation constants '''
-TIME_STEPS = 2000
+TIME_STEPS = 500
 TICKS_PER_SEC = 1000
-NUM_GENERATIONS = 150
-POPULATION_SIZE = 20
+NUM_GENERATIONS = 1
+POPULATION_SIZE = 5
 MAX_CONCURRENT_SIMS = 10
 
 ''' Mutation constants '''
