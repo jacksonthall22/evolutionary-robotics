@@ -392,13 +392,8 @@ class Solution:
 
         ps.End()
 
-    def create_brain(self, filename=None):
-        if filename is None:
-            filename = self.brain_filename
-        else:
-            assert filename.endswith('.nndf'), 'filename must be .nndf'
-
-        ps.Start_NeuralNetwork(filename)
+    def create_brain(self):
+        ps.Start_NeuralNetwork(self.brain_filename)
 
         num_sensors = [0]
         def send_touch_sensor(link_name):
