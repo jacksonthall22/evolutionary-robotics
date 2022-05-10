@@ -57,7 +57,7 @@ class ParallelHillClimber:
 
         for i, (parent, parent_fitness) in self.parents.items():
             child = copy.deepcopy(parent)
-            child.set_id(self.nextAvailableID)
+            child.id = self.nextAvailableID
             self.children[i] = [child, None]
             self.nextAvailableID += 1
 
