@@ -124,12 +124,20 @@ class ParallelHillClimber:
         best_parent = max((p[0] for p in self.parents.values()), key=lambda p: p.fitness)
         best_parent.start_simulation('GUI')
 
-    def save_population(self):
-        now = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
+    def save_population(self, subdir=None):
+        if subdir is None:
+            now = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
 
-        output_path = f'{BEST_BRAINS_PATH}/{now}'
-        if not os.path.exists(output_path):
-            os.makedirs(output_path, exist_ok=True)
+            output_path = f'{BEST_BRAINS_PATH}/{now}'
+            if not os.path.exists(output_path):
+                os.makedirs(output_path, exist_ok=True)
+        else:
+            output_path = f'{BEST_BRAINS_PATH}/{subdir}'
+            if os.path.exists(output_path):
+                for file in os.scandir(output_path):
+                    os.remove(file.path)
+            else:
+                os.makedirs(output_path, exist_ok=True)
 
         shutil.copyfile('constants.py', f'{output_path}/constants.py')
 
