@@ -20,7 +20,7 @@ import subprocess
 class Solution:
     def __init__(self, id: int, preset_weights: np.ndarray = None):
         self.id = id
-        self.weights = preset_weights
+        self.weights = preset_weights.copy() if preset_weights is not None else None
         self.fitness = None
 
     def set_id(self, id):

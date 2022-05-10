@@ -25,11 +25,9 @@ class ParallelHillClimber:
 
         self.parents = {}
         for i in range(c.POPULATION_SIZE):
-            if seed_weights is None:
-                solution = Solution(self.nextAvailableID, preset_weights=None)
-            else:
+            solution = Solution(self.nextAvailableID, preset_weights=seed_weights)
+            if seed_weights is not None:
                 # If starting from a single 'seed' brain, mutate parents right away
-                solution = Solution(self.nextAvailableID, preset_weights=seed_weights.copy())
                 solution.mutate(num_mutations=c.NUM_MUTATIONS_FROM_SEED)
             self.parents[i] = [solution, None]
             self.nextAvailableID += 1
