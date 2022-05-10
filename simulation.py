@@ -7,7 +7,7 @@ import constants as c
 import time
 
 class Simulation:
-    def __init__(self, direct_or_gui, id, brain_filename=None):
+    def __init__(self, direct_or_gui, id, temp_prefix=''):
         if direct_or_gui not in ('DIRECT', 'GUI'):
             raise ValueError
         direct_or_gui = (pb.DIRECT, pb.GUI)[direct_or_gui == 'GUI']
@@ -18,7 +18,7 @@ class Simulation:
         pb.setGravity(0, 0, -9.8)
 
         self.world = World()
-        self.robot = Robot(id, brain_filepath=brain_filename)
+        self.robot = Robot(id, temp_prefix=temp_prefix)
 
         ps.Prepare_To_Simulate(self.robot.robot_id)
 

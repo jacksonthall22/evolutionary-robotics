@@ -28,17 +28,16 @@ except ImportError:
 
 
 class Robot:
-    def __init__(self, id, brain_filepath=None):
-        if brain_filepath is None:
-            brain_filepath = f'brain{id}.nndf'
+    def __init__(self, id, temp_prefix=''):
+        self.brain_filepath = f'{temp_prefix}brain{id}.nndf'
 
         self.id = id
         self.sensors = {}
         self.motors = {}
         self.robot_id = pyb.loadURDF('body.urdf')
         self.cube_id = pyb.loadURDF('cube.urdf')
-        self.nn = NEURAL_NETWORK(brain_filepath)  # , robot_id=self.robot_id
-        delete_files(file=f'brain{id}.nndf')
+        self.nn = NEURAL_NETWORK(self.brain_filepath)  # , robot_id=self.robot_id
+        delete_files(file=self.brain_filepath)
 
         ps.Prepare_To_Simulate(self.robot_id)
         self.prepare_to_sense()
